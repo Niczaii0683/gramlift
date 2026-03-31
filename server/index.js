@@ -34,16 +34,16 @@ app.use(express.static(path.join(__dirname, "../public")));
 // ─── PACKAGES ─────────────────────────────────────────────────────────────────
 // Edit prices here. Must match the PACKAGES array in public/index.html exactly.
 const PACKAGES = {
-  100:    { price: 8.99,    name: "100 Followers" },
-  250:    { price: 20.40,   name: "250 Followers" },
-  500:    { price: 38.37,   name: "500 Followers" },
-  1000:   { price: 72.99,   name: "1,000 Followers" },
-  2000:   { price: 132.99,  name: "2,000 Followers" },
-  5000:   { price: 279.99,  name: "5,000 Followers" },
-  10000:  { price: 485.99,  name: "10,000 Followers" },
-  20000:  { price: 866.99,  name: "20,000 Followers" },
-  50000:  { price: 1919.99, name: "50,000 Followers" },
-  100000: { price: 3374.99, name: "100,000 Followers" },
+  100:    { price: 0.01, name: "100 Followers" },
+  250:    { price: 0.01, name: "250 Followers" },
+  500:    { price: 0.01, name: "500 Followers" },
+  1000:   { price: 0.01, name: "1,000 Followers" },
+  2000:   { price: 0.01, name: "2,000 Followers" },
+  5000:   { price: 0.01, name: "5,000 Followers" },
+  10000:  { price: 0.01, name: "10,000 Followers" },
+  20000:  { price: 0.01, name: "20,000 Followers" },
+  50000:  { price: 0.01, name: "50,000 Followers" },
+  100000: { price: 0.01, name: "100,000 Followers" },
 };
 
 const PLANS = {
