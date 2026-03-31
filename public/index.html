@@ -543,7 +543,7 @@ function renderBuyModal(){
     ${S.buyLoading
       ?`<button class="ctabtn" disabled><div class="spin"></div>Redirecting to checkout...</button>`
       :`<button class="ctabtn" onclick="submitBoostOrder()">
-        ${S.buyPayMethod==="stripe"?`Pay ${fmt(pkg.price)} securely →`:`Pay Securely →`}
+        Pay ${fmt(pkg.price)} with Card →
       </button>`}
     <p style="text-align:center;font-size:10px;color:var(--subtle);margin-top:8px">After payment is confirmed, your order is processed and delivered automatically.</p>
   </div></div>`;
@@ -666,7 +666,7 @@ function renderPlanStep2(plan){
   ${S.planLoading
     ?`<button class="ctabtn" disabled><div class="spin"></div>Redirecting to checkout...</button>`
     :`<button class="ctabtn" onclick="submitPlanOrder()">
-      ${S.planPay==="stripe"?`Pay $${plan.price} securely →`:`Pay Securely →`}
+      Pay $${plan.price} with Card →
     </button>`}
   <button class="ctabtn ghost" onclick="set({planStep:1})" style="margin-top:8px">← Back</button>
 </div>`;
