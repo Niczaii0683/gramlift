@@ -127,82 +127,77 @@ async function fulfillOrder({ sessionId, instagramUsername, quantity, amountPaid
 // ─────────────────────────────────────────────────────────────────────────────
 app.post("/api/create-checkout", async (req, res) => {
   try {
-    const { type, quantity, planId, instagramUsername, email } = req.body;
-
-    // Clean & validate the Instagram username
-    const igUser = (instagramUsername || "").trim().replace(/^@/, "").toLowerCase();
-    if (!igUser || !/^[a-zA-Z0-9_.]{1,30}$/.test(igUser)) {
-      return res.status(400).json({ error: "Invalid Instagram username. Use letters, numbers, underscores or dots only." });
-    }
-
-    let priceInCents, productName, qty;
-
-    if (type === "boost") {
-      const pkg = PACKAGES[Number(quantity)];
-      if (!pkg) return res.status(400).json({ error: "Invalid package quantity" });
-      priceInCents = Math.round(pkg.price * 100);
-      productName  = `GramLift — ${pkg.name}`;
-      qty          = Number(quantity);
-    } else if (type === "plan") {
-      const plan = PLANS[planId];
-      if (!plan) return res.status(400).json({ error: "Invalid plan ID" });
-      priceInCents = Math.round(plan.price * 100);
-      productName  = `GramLift — ${plan.name}`;
-      qty          = plan.quantity;
-    } else {
-      return res.status(400).json({ error: "type must be 'boost' or 'plan'" });
-    }
-
+    const { type, cart, quantity, planId, instagramUsername, email } = req.body;
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3001";
+    let lineItems = [];
+    let metaItems = [];
 
-    // Create the Stripe Checkout Session
-    // This generates the real Stripe-hosted payment page with card form
-    const session = await stripe.checkout.sessions.create({
-      mode:                 "payment",
-      payment_method_types: ["card"],    // Visa, Mastercard, Amex all work automatically
-
-      // Pre-fill email if customer provided it
-      customer_email: email || undefined,
-
-      line_items: [{
+    if (type === "cart" && Array.isArray(cart)) {
+      // CART MODE — multiple items
+      for (const item of cart) {
+        if (item.type === "boost") {
+          const pkg = PACKAGES[Number(item.qty)];
+          if (!pkg) continue;
+          const igUser = (item.instagram || "").trim().replace(/^@/, "").toLowerCase();
+          if (!igUser || !/^[a-zA-Z0-9_.]{1,30}$/.test(igUser)) continue;
+          lineItems.push({
+            price_data: {
+              currency: "usd",
+              unit_amount: Math.round(pkg.price * 100),
+              product_data: { name: `GramLift — ${pkg.name} → @${igUser}` },
+            },
+            quantity: 1,
+          });
+          metaItems.push({ type: "boost", qty: item.qty, instagram: igUser, price: pkg.price });
+        } else if (item.type === "plan") {
+          const plan = PLANS[item.planId];
+          if (!plan) continue;
+          lineItems.push({
+            price_data: {
+              currency: "usd",
+              unit_amount: Math.round(plan.price * 100),
+              product_data: { name: `GramLift — ${plan.name}` },
+            },
+            quantity: 1,
+          });
+          metaItems.push({ type: "plan", planId: item.planId, price: plan.price });
+        }
+      }
+      if (lineItems.length === 0) return res.status(400).json({ error: "No valid items in cart" });
+    } else if (type === "plan") {
+      // SINGLE PLAN MODE
+      const plan = PLANS[planId];
+      if (!plan) return res.status(400).json({ error: "Invalid plan" });
+      const igUser = (instagramUsername || "").trim().replace(/^@/, "").toLowerCase();
+      lineItems.push({
         price_data: {
-          currency:     "usd",
-          unit_amount:  priceInCents,
-          product_data: {
-            name:        productName,
-            description: `${qty.toLocaleString()} real followers delivered to @${igUser}`,
-            images:      [],
-          },
+          currency: "usd",
+          unit_amount: Math.round(plan.price * 100),
+          product_data: { name: `GramLift — ${plan.name}` },
         },
         quantity: 1,
-      }],
+      });
+      metaItems.push({ type: "plan", planId, instagram: igUser, price: plan.price });
+    } else {
+      return res.status(400).json({ error: "Invalid request type" });
+    }
 
-      // Metadata travels with the payment — this is how we know who bought what
-      // when the webhook fires. Do NOT put sensitive data here.
-      metadata: {
-        instagramUsername: igUser,
-        quantity:          String(qty),
-        packageName:       productName,
-        type,
-      },
-
-      // Where to send the customer after payment
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      customer_email: email || undefined,
+      line_items: lineItems,
+      metadata: { items: JSON.stringify(metaItems) },
       success_url: `${frontendUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${frontendUrl}/cancel.html`,
-
-      // Allow guest checkout (customer doesn't need a Stripe account)
       billing_address_collection: "auto",
     });
 
-    console.log(`\n[Stripe] Session created for @${igUser} — ${productName} — $${(priceInCents/100).toFixed(2)}`);
-
-    // Return the Stripe checkout URL to the browser
+    console.log(`\n[Stripe] Cart session created — ${lineItems.length} item(s)`);
     res.json({ url: session.url });
 
   } catch (err) {
     console.error("[Stripe] Error:", err.message);
-
-    // Give a helpful error message if keys aren't set up
     if (err.message.includes("No API key")) {
       return res.status(500).json({ error: "Stripe not configured — add STRIPE_SECRET_KEY to your .env file" });
     }
@@ -243,25 +238,32 @@ app.post("/webhook", async (req, res) => {
     const session = event.data.object;
     const meta    = session.metadata;
 
-    const ig       = meta.instagramUsername;
-    const quantity = Number(meta.quantity);
-    const amount   = session.amount_total / 100;
+    const amount = session.amount_total / 100;
+    console.log(`\n[Webhook] ✅ Payment confirmed! $${amount}`);
 
-    console.log(`\n[Webhook] ✅ Payment confirmed!`);
-    console.log(`  Instagram : @${ig}`);
-    console.log(`  Package   : ${meta.packageName}`);
-    console.log(`  Quantity  : ${quantity}`);
-    console.log(`  Amount    : $${amount} USD`);
-    console.log(`  Session   : ${session.id}`);
+    // Parse cart items from metadata
+    let items = [];
+    try { items = JSON.parse(meta.items || "[]"); } catch {}
 
-    // Fulfill in background so webhook responds quickly
-    fulfillOrder({
-      sessionId:         session.id,
-      instagramUsername: ig,
-      quantity,
-      amountPaid:        amount,
-      packageName:       meta.packageName,
-    });
+    for (const item of items) {
+      if (item.type === "boost" && item.instagram && item.qty) {
+        fulfillOrder({
+          sessionId: session.id,
+          instagramUsername: item.instagram,
+          quantity: item.qty,
+          amountPaid: item.price,
+          packageName: item.qty + " Followers",
+        });
+      }
+    }
+    if (items.length === 0) {
+      // Fallback for old single-item format
+      const ig = meta.instagramUsername;
+      const quantity = Number(meta.quantity);
+      if (ig && quantity) {
+        fulfillOrder({ sessionId: session.id, instagramUsername: ig, quantity, amountPaid: amount, packageName: meta.packageName });
+      }
+    }
   }
 
   res.json({ received: true });

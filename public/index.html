@@ -16,25 +16,30 @@
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
 
 /* NAV */
-.gnav{position:sticky;top:0;z-index:200;background:white;border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;padding:0 24px;gap:14px;}
-.logo{font-family:'Sora',sans-serif;font-weight:800;font-size:19px;white-space:nowrap;}
+.gnav{position:sticky;top:0;z-index:200;background:white;border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;padding:0 20px;gap:12px;}
+.logo{font-family:'Sora',sans-serif;font-weight:800;font-size:19px;white-space:nowrap;cursor:pointer;}
 .logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sw{display:flex;align-items:center;flex:1;max-width:400px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:white;}
-.sw:focus-within{border-color:#ea580c;box-shadow:0 0 0 3px rgba(234,88,12,.08);}
+.sw{display:flex;align-items:center;flex:1;max-width:380px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:white;}
+.sw:focus-within{border-color:#ea580c;}
 .sw input{flex:1;border:none;outline:none;padding:9px 12px;font-size:13px;font-family:inherit;}
 .sbtn{padding:8px 14px;background:var(--grad);border:none;color:white;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;}
-.sbtn:hover{opacity:.88;}
 .nlnks{display:flex;gap:4px;margin-left:auto;align-items:center;}
 .nlnk{background:none;border:none;padding:8px 11px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;border-radius:7px;}
 .nlnk:hover{color:var(--text);background:#f3f4f6;}
 .nghost{background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);}
 .nghost:hover{background:#f9fafb;}
 .nprim{background:var(--grad);border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit;}
-.nprim:hover{opacity:.88;}
+
+/* CART ICON */
+.cart-btn{position:relative;background:white;border:1.5px solid var(--border);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--text);display:flex;align-items:center;gap:6px;transition:all .15s;}
+.cart-btn:hover{border-color:#ea580c;background:#fff7ed;}
+.cart-count{background:var(--grad);color:white;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+
+/* SEARCH PREVIEW */
 .sprev{position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border:1px solid var(--border);border-radius:11px;padding:14px;box-shadow:0 8px 32px rgba(0,0,0,.10);z-index:500;min-width:300px;}
 .spav{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;flex-shrink:0;}
 
-/* LAYOUT */
+/* APP SHELL */
 .shell{display:flex;min-height:calc(100vh - 62px);}
 .sidebar{width:205px;background:white;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;}
 .nvsec{padding:10px 8px 4px;}
@@ -56,31 +61,77 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .sc.pr{background:var(--grad);border:none;color:white;}
 .slbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.65;margin-bottom:5px;}
 .sval{font-family:'Sora',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em;}
-.topupm{margin-top:10px;padding:5px 10px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);border-radius:7px;font-size:11px;font-weight:600;color:white;cursor:pointer;font-family:inherit;}
 
 /* BOOST GRID */
 .bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
 @media(max-width:900px){.bgrid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:680px){.bgrid{grid-template-columns:repeat(3,1fr);}}
-.pkg{background:white;border:1.5px solid var(--border);border-radius:11px;padding:16px 10px;cursor:pointer;text-align:center;transition:all .17s;position:relative;user-select:none;}
+
+/* PACKAGE CARD */
+.pkg{background:white;border:1.5px solid var(--border);border-radius:11px;padding:14px 10px 12px;cursor:pointer;text-align:center;transition:all .17s;position:relative;user-select:none;}
 .pkg:hover{border-color:#fb923c;transform:translateY(-2px);box-shadow:0 6px 20px rgba(234,88,12,.10);}
-.pkg.sel{border-color:#ea580c;background:#fff7ed;box-shadow:0 0 0 3px rgba(234,88,12,.11);}
 .pqty{font-family:'Sora',sans-serif;font-weight:800;font-size:18px;}
-.plbl{font-size:11px;color:var(--muted);margin-bottom:9px;}
-.ppr{font-size:15px;font-weight:700;color:#c2410c;}
+.plbl{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.ppr{font-size:14px;font-weight:700;color:#c2410c;margin-bottom:10px;}
 .porig{font-size:10px;color:var(--subtle);text-decoration:line-through;height:13px;margin-bottom:2px;}
 .dbadge{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--grad);color:white;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.add-btn{width:100%;padding:7px;background:var(--grad);border:none;border-radius:7px;color:white;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.add-btn:hover{opacity:.85;}
+.add-btn.added{background:#f0fdf4;color:#15803d;border:1px solid #86efac;}
 
-/* HANDLE PANEL */
-.hp{background:white;border:1.5px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:14px;}
-.hp-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-.hp-price{font-size:20px;font-weight:800;color:#c2410c;font-family:'Sora',sans-serif;}
-.uinput{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border-color .18s;margin-bottom:6px;}
-.uinput:focus{border-color:#ea580c;box-shadow:0 0 0 3px rgba(234,88,12,.08);}
-.uinput.err{border-color:#dc2626;}
-.errtxt{font-size:11px;color:#dc2626;margin-bottom:8px;}
-.chips{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
-.chip{font-size:11px;color:var(--muted);}
+/* USERNAME INPUT INLINE */
+.ig-inline{margin-top:8px;display:none;}
+.ig-inline.show{display:block;}
+.ig-inline input{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;}
+.ig-inline input:focus{border-color:#ea580c;}
+.ig-inline .confirm-btn{width:100%;margin-top:6px;padding:7px;background:#111827;border:none;border-radius:7px;color:white;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* PLANS */
+.plgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.plcard{background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px;position:relative;transition:all .2s;}
+.plcard:hover{border-color:#fb923c;transform:translateY(-2px);}
+.plcard.pop{border-color:#ea580c;box-shadow:0 4px 20px rgba(234,88,12,.13);}
+.popbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--grad);color:white;font-size:10px;font-weight:700;padding:2px 12px;border-radius:20px;white-space:nowrap;}
+
+/* CART PAGE */
+.cart-empty{text-align:center;padding:60px 20px;}
+.cart-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.cart-item{background:white;border:1px solid var(--border);border-radius:11px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.cart-icon{width:38px;height:38px;border-radius:9px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.cart-remove{background:none;border:none;color:#dc2626;cursor:pointer;font-size:18px;padding:4px;margin-left:auto;flex-shrink:0;}
+.cart-total{background:white;border:1.5px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:16px;}
+.cart-total-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;}
+.cart-total-row.big{font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:#c2410c;border-top:1px solid var(--border);margin-top:8px;padding-top:12px;}
+
+/* CHECKOUT FLOW */
+.checkout-wrap{max-width:520px;}
+.steps{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px;background:white;}
+.step{flex:1;padding:10px 6px;text-align:center;font-size:11px;font-weight:600;color:var(--subtle);}
+.step.done{color:#15803d;background:#f0fdf4;}
+.step.active{color:#c2410c;background:#fff7ed;}
+.stepn{display:block;font-family:'Sora',sans-serif;font-weight:800;font-size:15px;margin-bottom:1px;}
+.chk-card{background:white;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:14px;}
+.fl{margin-bottom:12px;}
+.fl label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin-bottom:4px;}
+.fl input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;}
+.fl input:focus{border-color:#ea580c;}
+.fl input.ferr{border-color:#dc2626;}
+.ferrtxt{font-size:11px;color:#dc2626;margin-top:3px;}
+
+/* PAYMENT DISPLAY */
+.pay-box{background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px 16px;margin-bottom:13px;display:flex;align-items:center;gap:12px;}
+.pay-cards{display:flex;gap:4px;margin-top:4px;}
+.pcb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;color:white;}
+.pcb.visa{background:#1a1f71;}
+.pcb.mc{background:#eb001b;}
+.pcb.amex{background:#007bc1;}
+
+/* BUTTONS */
+.cta{width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--grad);color:white;transition:opacity .15s;}
+.cta:hover{opacity:.88;}
+.cta:disabled{opacity:.4;cursor:not-allowed;}
+.cta.ghost{background:white;color:#c2410c;border:1.5px solid #fed7aa;}
+.cta.ghost:hover{background:#fff7ed;opacity:1;}
 
 /* ORDERS */
 .olist{display:flex;flex-direction:column;gap:7px;}
@@ -90,105 +141,42 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .badge.fulfilled{background:#f0fdf4;color:#15803d;}
 .badge.pending{background:#fffbeb;color:#b45309;}
 .badge.failed{background:#fef2f2;color:#b91c1c;}
-.badge.processing{background:#eff6ff;color:#1d4ed8;}
 
-/* MODALS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.46);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;}
-.modal{background:white;border-radius:18px;padding:24px 26px;width:100%;max-width:430px;animation:pop .2s ease;max-height:90vh;overflow-y:auto;}
-@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
-.mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
-.mcls{background:#f3f4f6;border:none;border-radius:7px;width:32px;height:32px;font-size:17px;cursor:pointer;color:var(--muted);flex-shrink:0;}
-.sumbox{background:#fafaf9;border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:13px;}
-.sr{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--muted);}
-.sr span:last-child{color:var(--text);font-weight:500;}
-.sr.total{border-top:1px solid var(--border);margin-top:7px;padding-top:9px;font-weight:700;font-size:14px;color:var(--text);}
-.sr.total span:last-child{color:#c2410c;}
-.fl{margin-bottom:12px;}
-.fl label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin-bottom:4px;}
-.fl input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;transition:border-color .18s;}
-.fl input:focus{border-color:#ea580c;}
-.fl input.ferr{border-color:#dc2626;}
-
-/* PAYMENT OPTIONS */
-.pmethods{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px;}
-.popt{padding:12px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;text-align:center;transition:all .15s;background:white;}
-.popt:hover{border-color:#fb923c;}
-.popt.sel{border-color:#ea580c;background:#fff7ed;}
-.plgo{font-size:20px;margin-bottom:3px;}
-.pnm{font-weight:700;font-size:12px;}
-.psub{font-size:10px;color:var(--subtle);margin-top:2px;}
-.pcards{display:flex;justify-content:center;gap:3px;margin-top:5px;flex-wrap:wrap;}
-.pcb{font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;color:white;}
-.pcb.visa{background:#1a1f71;}
-.pcb.mc{background:#eb001b;}
-.pcb.amex{background:#007bc1;}
-.pcb.pp{background:#003087;}
-
-/* BUTTONS */
-.ctabtn{width:100%;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--grad);color:white;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.ctabtn:hover{opacity:.88;}
-.ctabtn:disabled{opacity:.4;cursor:not-allowed;}
-.ctabtn.ghost{background:white;color:#c2410c;border:1.5px solid #fed7aa;}
-.ctabtn.ghost:hover{background:#fff7ed;opacity:1;}
-
-/* TOPUP */
-.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px;}
-.tamtbtn{padding:13px;border-radius:10px;border:1.5px solid var(--border);background:white;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s;}
-.tamtbtn.sel{border-color:#ea580c;background:#fff7ed;}
-.tamtval{font-family:'Sora',sans-serif;font-weight:800;font-size:16px;}
-.tamtbtn.sel .tamtval{color:#c2410c;}
-
-/* TIPBOX */
+/* TIP */
 .tip{background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;padding:9px 12px;font-size:12px;color:#92400e;margin-bottom:12px;}
-.tip.green{background:#f0fdf4;border-color:#86efac;color:#15803d;}
-.tip.blue{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;}
-
-/* PLANS */
-.plgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
-.plcard{background:white;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:22px;position:relative;transition:all .2s;}
-.plcard:hover{border-color:#fb923c;transform:translateY(-2px);box-shadow:0 8px 28px rgba(234,88,12,.09);}
-.plcard.pop{border-color:#ea580c;box-shadow:0 4px 20px rgba(234,88,12,.13);}
-.popbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--grad);color:white;font-size:10px;font-weight:700;padding:2px 12px;border-radius:20px;white-space:nowrap;}
 
 /* CHARTS */
 .charts2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 .chtcard{background:white;border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;}
 .ctabs{display:flex;gap:2px;background:#f3f4f6;border-radius:7px;padding:2px;}
 .ctab{flex:1;padding:5px 10px;border:none;background:transparent;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);}
-.ctab.active{background:white;color:#c2410c;box-shadow:0 1px 3px rgba(0,0,0,.08);}
-
-/* IG PROFILE */
+.ctab.active{background:white;color:#c2410c;}
 .igbanner{background:linear-gradient(135deg,#fff7ed,#fef3c7);border:1px solid #fed7aa;border-radius:var(--r-lg);padding:18px 22px;margin-bottom:18px;}
-.igav{width:52px;height:52px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;flex-shrink:0;}
 .igsts{display:flex;gap:0;flex:1;}
 .igst{flex:1;text-align:center;padding:0 14px;border-right:1px solid #fed7aa;}
 .igst:last-child{border-right:none;}
 .igstv{font-family:'Sora',sans-serif;font-weight:800;font-size:19px;color:#c2410c;}
 .igstl{font-size:11px;color:var(--muted);margin-top:1px;}
-.eleg{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
-.eli{display:flex;align-items:center;gap:7px;font-size:11px;}
-.eld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .cmrow{display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
 .cm{font-size:11px;color:var(--muted);}
 .cm strong{display:block;font-family:'Sora',sans-serif;font-weight:800;font-size:18px;color:var(--text);}
+.eleg{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
+.eli{display:flex;align-items:center;gap:7px;font-size:11px;}
+.eld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 
 /* SETTINGS */
 .setcard{background:white;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;margin-bottom:12px;}
 .setcard h3{font-size:14px;font-weight:700;margin-bottom:13px;}
 .savebtn{padding:9px 20px;background:var(--grad);color:white;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;}
 
-/* SPINNER / TOAST / STEPS */
-.spin{width:15px;height:15px;border:2px solid #fed7aa;border-top-color:#ea580c;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+/* MISC */
+.spin{width:15px;height:15px;border:2px solid #fed7aa;border-top-color:#ea580c;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;display:inline-block;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:22px;right:22px;background:#111827;color:white;border-radius:11px;padding:11px 16px;font-size:13px;font-weight:500;z-index:9999;max-width:300px;animation:pop .25s ease;}
-.steps{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;background:white;}
-.step{flex:1;padding:10px 6px;text-align:center;font-size:11px;font-weight:600;color:var(--subtle);}
-.step.done{color:#15803d;background:#f0fdf4;}
-.step.active{color:#c2410c;background:#fff7ed;}
-.stepn{display:block;font-family:'Sora',sans-serif;font-weight:800;font-size:15px;margin-bottom:1px;}
-
-/* LOGIN */
-.lwrap{min-height:100vh;background:var(--bg);display:flex;flex-direction:column;}
+@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.fade-in{animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.login-wrap{min-height:100vh;background:var(--bg);display:flex;flex-direction:column;}
 .lnav{background:white;border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;padding:0 24px;}
 .lctr{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
 .lcard{background:white;border:1px solid var(--border);border-radius:18px;padding:28px 24px;width:100%;max-width:380px;}
@@ -197,67 +185,95 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .ltab.active{color:#c2410c;border-bottom-color:#c2410c;}
 .subbtn{width:100%;padding:11px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--grad);color:white;margin-bottom:12px;}
 .gbtn{width:100%;padding:10px;border:1.5px solid var(--border);background:white;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted);}
-.gbtn:hover{background:#f9fafb;}
-
-.fade-in{animation:fadeIn .3s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:700px){.sidebar{display:none;}.main{padding:14px;}.charts2{grid-template-columns:1fr;}.srow{grid-template-columns:1fr 1fr;}}
+@media(max-width:700px){.sidebar{display:none;}.main{padding:14px;}.charts2{grid-template-columns:1fr;}.srow{grid-template-columns:1fr 1fr;}.bgrid{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
-// ─── CONFIG — point to your backend ──────────────────────────────────────────
-// When running locally: http://localhost:3001
-// When deployed: https://your-backend.vercel.app
-const API_BASE = "";  // Same origin — backend serves this file
-
-// ─── DATA ────────────────────────────────────────────────────────────────────
-const MOCK_USER={email:"founder@gramlift.com",instagram_handle:"nicc_yeo",credit_balance:120.00};
-const MOCK_ORDERS=[
-  {id:"GL-88291",package_name:"5K Followers",quantity:5000,amount_paid:279.99,status:"fulfilled",created_at:"2025-06-01T10:22:00Z"},
-  {id:"GL-77100",package_name:"1K Followers",quantity:1000,amount_paid:72.99,status:"fulfilled",created_at:"2025-05-10T09:00:00Z"},
-];
+// ─── PRICES — edit these to change what customers pay ────────────────────────
+// When you change a price here, also change the matching price in server/index.js
+// Both files must always have the same prices.
 const PACKAGES=[
-  {qty:100,   price:0.01,  base:0.01,   disc:0},
-  {qty:250,   price:0.01,  base:0.01,   disc:0},
-  {qty:500,   price:0.01,  base:0.01,   disc:0},
-  {qty:1000,  price:0.01,  base:0.01,   disc:0},
-  {qty:2000,  price:0.01,  base:0.01,   disc:0},
-  {qty:5000,  price:0.01,  base:0.01,   disc:0},
-  {qty:10000, price:0.01,  base:0.01,   disc:0},
-  {qty:20000, price:0.01,  base:0.01,   disc:0},
-  {qty:50000, price:0.01,  base:0.01,   disc:0},
-  {qty:100000,price:0.01,  base:0.01,   disc:0},
+  {qty:100,   price:0.01, base:0.01,  disc:0},
+  {qty:250,   price:0.01, base:0.01,  disc:0},
+  {qty:500,   price:0.01, base:0.01,  disc:0},
+  {qty:1000,  price:0.01, base:0.01,  disc:0},
+  {qty:2000,  price:0.01, base:0.01,  disc:0},
+  {qty:5000,  price:0.01, base:0.01,  disc:0},
+  {qty:10000, price:0.01, base:0.01,  disc:0},
+  {qty:20000, price:0.01, base:0.01,  disc:0},
+  {qty:50000, price:0.01, base:0.01,  disc:0},
+  {qty:100000,price:0.01, base:0.01,  disc:0},
 ];
 const PLANS=[
   {id:"starter",name:"Starter",price:0.01,popular:false,desc:"500 followers/mo",features:["500 real followers / month","Audience targeting","Basic analytics","Email support"]},
   {id:"creator",name:"Creator",price:0.01,popular:true, desc:"1,500 followers/mo",features:["1,500 real followers / month","Advanced targeting","Priority growth","Live analytics","Chat support"]},
   {id:"pro",    name:"Pro",    price:0.01,popular:false,desc:"4,000 followers/mo",features:["4,000 real followers / month","Elite targeting","Account manager","Full analytics","24/7 support"]},
 ];
-const TOPUP=[19,49,99,200];
+// ─────────────────────────────────────────────────────────────────────────────
+
+const MOCK_USER={email:"founder@gramlift.com",instagram_handle:"nicc_yeo",credit_balance:0};
+const MOCK_ORDERS=[
+  {id:"GL-88291",package_name:"5K Followers",instagram:"nicc_yeo",quantity:5000,amount_paid:0.01,status:"fulfilled",created_at:"2025-06-01T10:22:00Z"},
+];
 const fmt=n=>"$"+Number(n).toFixed(2);
 const fmtK=n=>n>=1000?(n/1000)+"K":""+n;
 const fmtDate=s=>new Date(s).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
-const fmtNum=n=>n>=1000000?(n/1000000).toFixed(1)+"M":n>=1000?(n/1000).toFixed(1)+"K":""+n;
+const fmtNum=n=>n>=1000?(n/1000).toFixed(1)+"K":""+n;
 const ICONS={100:"⚡",250:"⚡",500:"🔥",1000:"🔥",2000:"🔥",5000:"🚀",10000:"🚀",20000:"🚀",50000:"🚀",100000:"💫"};
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let S={
-  page:"login",ltab:"login",user:null,orders:[...MOCK_ORDERS],tab:"overview",
-  selPkg:null,modal:null,topupAmt:49,toast:null,
+  page:"login",ltab:"login",user:null,orders:[...MOCK_ORDERS],
+  tab:"overview",
+  // Cart: array of {id, type, qty, instagram, planId, name, price}
+  cart:[],
+  // Per-package username input (key = qty)
+  pkgIg:{},
+  pkgShowIg:{},  // which packages are showing the username input
+  // Checkout flow
+  chkStep:1,   // 1=review cart, 2=payment
+  chkLoading:false,
+  toast:null,
   searchVal:"",searchResult:null,searchLoading:false,showPrev:false,
   viewedProfile:null,chartPeriod:"daily",
-  buyStep:1,buyIg:"",buyIgErr:"",buyEmail:"",buyPayMethod:"stripe",buyLoading:false,
-  selPlan:null,planStep:1,planIg:"",planIgErr:"",planEmail:"",planPay:"stripe",planLoading:false,
   settingsSaved:false,
 };
 function set(p){Object.assign(S,p);render();}
-function toast(msg,delay=5000){set({toast:msg});setTimeout(()=>set({toast:null}),delay);}
+function toast(msg){set({toast:msg});setTimeout(()=>set({toast:null}),4000);}
 
-// ─── MOCK IG ──────────────────────────────────────────────────────────────────
+// Cart helpers
+function cartCount(){return S.cart.length;}
+function cartTotal(){return S.cart.reduce((s,i)=>s+i.price,0);}
+function removeFromCart(id){set({cart:S.cart.filter(i=>i.id!==id)});}
+function addBoostToCart(pkg,ig){
+  const item={
+    id:Date.now()+"",
+    type:"boost",
+    qty:pkg.qty,
+    instagram:ig,
+    name:fmtK(pkg.qty)+" Followers → @"+ig,
+    price:pkg.price,
+  };
+  set({cart:[...S.cart,item],pkgShowIg:{...S.pkgShowIg,[pkg.qty]:false},pkgIg:{...S.pkgIg,[pkg.qty]:""}});
+  toast("Added "+fmtK(pkg.qty)+" followers to cart!");
+}
+function addPlanToCart(plan){
+  const item={
+    id:Date.now()+"",
+    type:"plan",
+    planId:plan.id,
+    name:plan.name+" Plan (monthly)",
+    price:plan.price,
+  };
+  set({cart:[...S.cart,item]});
+  toast(plan.name+" Plan added to cart!");
+}
+
+// ─── MOCK IG LOOKUP ────────────────────────────────────────────────────────────
 function mockIG(h){
-  h=h.replace("@","").toLowerCase();
+  h=(h||"nicc_yeo").replace("@","").toLowerCase();
   const seed=h.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
   const f=800+((seed*137)%8000),fo=300+((seed*89)%2000),p=10+((seed*23)%300);
   return{handle:h,name:h[0].toUpperCase()+h.slice(1).replace(/_/g," "),
@@ -268,7 +284,7 @@ function mockIG(h){
   };
 }
 
-// ─── CHARTS ───────────────────────────────────────────────────────────────────
+// ─── CHARTS ────────────────────────────────────────────────────────────────────
 let _ch={};
 function dc(id){if(_ch[id]){_ch[id].destroy();delete _ch[id];}}
 function projGrowth(base,period){
@@ -286,23 +302,22 @@ function projGrowth(base,period){
   }
   return{labels,core,elite,none};
 }
-function initGC(p){dc("g");const c=document.getElementById("gChart");if(!c)return;const d=projGrowth(p.followers,S.chartPeriod);_ch.g=new Chart(c,{type:"line",data:{labels:d.labels,datasets:[{label:"Starter",data:d.core,borderColor:"#dc2626",backgroundColor:"rgba(220,38,38,.07)",pointBackgroundColor:"#dc2626",tension:.4,pointRadius:4,borderWidth:2.5},{label:"Pro",data:d.elite,borderColor:"#f59e0b",backgroundColor:"rgba(245,158,11,.05)",pointBackgroundColor:"#f59e0b",tension:.4,pointRadius:4,borderWidth:2.5},{label:"Without",data:d.none,borderColor:"#d1d5db",backgroundColor:"transparent",pointBackgroundColor:"#9ca3af",tension:.4,pointRadius:3,borderWidth:1.5,borderDash:[4,4]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:"rgba(0,0,0,.03)"},ticks:{font:{size:10}}},y:{grid:{color:"rgba(0,0,0,.03)"},ticks:{font:{size:10},callback:v=>fmtNum(v)}}}}});}
-function initDC(p){dc("d");const c=document.getElementById("dChart");if(!c)return;const es=p.engagementSources;_ch.d=new Chart(c,{type:"doughnut",data:{labels:["Organic","Discover","Search","DM","Hashtags"],datasets:[{data:[es.organic,es.discover,es.search,es.dm,es.hashtags],backgroundColor:["#dc2626","#ea580c","#f59e0b","#6366f1","#22c55e"],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:"68%",plugins:{legend:{display:false}}}});}
-function initBC(p){dc("b");const c=document.getElementById("bChart");if(!c)return;_ch.b=new Chart(c,{type:"bar",data:{labels:["Day 1","Day 2","Day 3","Day 4","Day 5","Day 6","Day 7"],datasets:[{data:p.engagementTrend,backgroundColor:"#22c55e",borderRadius:7,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{display:false}}}});}
+function initGC(p){dc("g");const ctx=document.getElementById("gChart");if(!ctx)return;const d=projGrowth(p.followers,S.chartPeriod);_ch.g=new Chart(ctx,{type:"line",data:{labels:d.labels,datasets:[{label:"Starter",data:d.core,borderColor:"#dc2626",backgroundColor:"rgba(220,38,38,.07)",pointBackgroundColor:"#dc2626",tension:.4,pointRadius:4,borderWidth:2.5},{label:"Pro",data:d.elite,borderColor:"#f59e0b",backgroundColor:"rgba(245,158,11,.05)",pointBackgroundColor:"#f59e0b",tension:.4,pointRadius:4,borderWidth:2.5},{label:"Without",data:d.none,borderColor:"#d1d5db",backgroundColor:"transparent",pointBackgroundColor:"#9ca3af",tension:.4,pointRadius:3,borderWidth:1.5,borderDash:[4,4]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:"rgba(0,0,0,.03)"},ticks:{font:{size:10}}},y:{grid:{color:"rgba(0,0,0,.03)"},ticks:{font:{size:10},callback:v=>fmtNum(v)}}}}});}
+function initDC(p){dc("d");const ctx=document.getElementById("dChart");if(!ctx)return;const es=p.engagementSources;_ch.d=new Chart(ctx,{type:"doughnut",data:{labels:["Organic","Discover","Search","DM","Hashtags"],datasets:[{data:[es.organic,es.discover,es.search,es.dm,es.hashtags],backgroundColor:["#dc2626","#ea580c","#f59e0b","#6366f1","#22c55e"],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:"68%",plugins:{legend:{display:false}}}});}
+function initBC(p){dc("b");const ctx=document.getElementById("bChart");if(!ctx)return;_ch.b=new Chart(ctx,{type:"bar",data:{labels:["Day 1","Day 2","Day 3","Day 4","Day 5","Day 6","Day 7"],datasets:[{data:p.engagementTrend,backgroundColor:"#22c55e",borderRadius:7,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{display:false}}}});}
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
+// ─── RENDER ────────────────────────────────────────────────────────────────────
 function render(){
-  let html=S.page==="login"?renderLogin():renderNav()+'<div class="shell">'+renderSidebar()+'<main class="main">'+renderPage()+'</main></div>';
-  if(S.modal==="buy")html+=renderBuyModal();
-  if(S.modal==="topup")html+=renderTopupModal();
-  if(S.modal==="planchk")html+=renderPlanModal();
+  const cartC=cartCount();
+  let html=S.page==="login"?renderLogin():
+    renderNav(cartC)+'<div class="shell">'+renderSidebar()+'<main class="main">'+renderPage()+'</main></div>';
   if(S.toast)html+=`<div class="toast">✅ ${S.toast}</div>`;
   document.getElementById("root").innerHTML=html;
   requestAnimationFrame(()=>{if(S.tab==="igp"&&S.viewedProfile){initGC(S.viewedProfile);initDC(S.viewedProfile);initBC(S.viewedProfile);}});
 }
 
-// ─── NAV ──────────────────────────────────────────────────────────────────────
-function renderNav(){
+// ─── NAV ───────────────────────────────────────────────────────────────────────
+function renderNav(cartC){
   const prev=S.showPrev&&S.searchResult?`<div class="sprev">
     <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
       <div class="spav">${S.searchResult.name[0]}</div>
@@ -317,8 +332,8 @@ function renderNav(){
     <button onclick="viewProfile()" style="width:100%;margin-top:10px;padding:8px;background:var(--grad);border:none;border-radius:8px;color:white;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">View Full Growth Report →</button>
   </div>`:"";
   return`<nav class="gnav">
-  <div class="logo"><span>GramLift</span></div>
-  <div style="position:relative;flex:1;max-width:400px;">
+  <div class="logo" onclick="set({tab:'overview'})"><span>GramLift</span></div>
+  <div style="position:relative;flex:1;max-width:380px;">
     <div class="sw">
       <input type="text" placeholder="@InstagramHandle — check your growth" value="${S.searchVal}"
         oninput="set({searchVal:this.value,showPrev:false,searchResult:null})"
@@ -328,8 +343,12 @@ function renderNav(){
   </div>
   <div class="nlnks">
     <button class="nlnk" onclick="set({tab:'plans'})">Pricing</button>
-    ${S.user?`<button class="nghost" onclick="set({page:'login',user:null,tab:'overview'})">Log Out</button>`:
-    `<button class="nghost" onclick="set({page:'login'})">Login</button><button class="nprim" onclick="set({page:'login'})">Get Started</button>`}
+    <button class="cart-btn" onclick="set({tab:'cart'})">
+      🛒 Cart ${cartC>0?`<span class="cart-count">${cartC}</span>`:""}
+    </button>
+    ${S.user
+      ?`<button class="nghost" onclick="set({page:'login',user:null,tab:'overview',cart:[]})">Log Out</button>`
+      :`<button class="nghost" onclick="set({page:'login'})">Login</button><button class="nprim" onclick="set({page:'login'})">Get Started</button>`}
   </div>
 </nav>`;
 }
@@ -341,20 +360,33 @@ async function doSearch(){
 }
 function viewProfile(){set({viewedProfile:S.searchResult,tab:"igp",showPrev:false});}
 
-// ─── SIDEBAR ──────────────────────────────────────────────────────────────────
+// ─── SIDEBAR ───────────────────────────────────────────────────────────────────
 function renderSidebar(){
   if(!S.user)return"";
-  const items=[{key:"overview",i:"◉",l:"Dashboard"},{key:"igp",i:"📊",l:"Growth Report"},{key:"boost",i:"▲",l:"Boost Followers"},{key:"plans",i:"◈",l:"Buy a Plan"},{key:"orders",i:"≡",l:"Orders"},{key:"settings",i:"⚙",l:"Settings"}];
+  const cartC=cartCount();
+  const items=[
+    {key:"overview",i:"◉",l:"Dashboard"},
+    {key:"igp",i:"📊",l:"Growth Report"},
+    {key:"boost",i:"▲",l:"Boost Followers"},
+    {key:"plans",i:"◈",l:"Buy a Plan"},
+    {key:"cart",i:"🛒",l:"Cart"+(cartC>0?` (${cartC})`:"")} ,
+    {key:"orders",i:"≡",l:"Orders"},
+    {key:"settings",i:"⚙",l:"Settings"},
+  ];
   return`<aside class="sidebar"><nav class="nvsec"><span class="nvlbl">Menu</span>
-  ${items.map(it=>`<button class="nvi${S.tab===it.key?" active":""}" onclick="set({tab:'${it.key}',showPrev:false})"><span>${it.i}</span>${it.l}</button>`).join("")}
+  ${items.map(it=>`<button class="nvi${S.tab===it.key?" active":""}" onclick="set({tab:'${it.key}',showPrev:false})">
+    <span>${it.i}</span>${it.l}
+  </button>`).join("")}
   </nav>
   <div class="uftr">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
       <div class="avc">${S.user.email[0].toUpperCase()}</div>
-      <div style="overflow:hidden"><div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.user.email}</div>
-      <div style="font-size:10px;color:var(--subtle)">@${S.user.instagram_handle||"—"}</div></div>
+      <div style="overflow:hidden">
+        <div style="font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.user.email}</div>
+        <div style="font-size:10px;color:var(--subtle)">@${S.user.instagram_handle||"—"}</div>
+      </div>
     </div>
-    <button class="lout" onclick="set({page:'login',user:null,tab:'overview'})">Log Out</button>
+    <button class="lout" onclick="set({page:'login',user:null,tab:'overview',cart:[]})">Log Out</button>
   </div></aside>`;
 }
 
@@ -363,23 +395,24 @@ function renderPage(){
   if(S.tab==="igp")      return renderIGProfile();
   if(S.tab==="boost")    return renderBoost();
   if(S.tab==="plans")    return renderPlans();
+  if(S.tab==="cart")     return renderCart();
   if(S.tab==="orders")   return renderOrders();
   if(S.tab==="settings") return renderSettings();
   return renderOverview();
 }
 
-// ─── OVERVIEW ────────────────────────────────────────────────────────────────
+// ─── OVERVIEW ──────────────────────────────────────────────────────────────────
 function renderOverview(){
   const u=S.user||MOCK_USER;
   return`<div class="fade-in">
   <div class="ptitle">Welcome back 👋</div>
   <div class="psub">Your GramLift account at a glance.</div>
   <div class="srow">
-    <div class="sc pr"><div class="slbl">Credit Balance</div><div class="sval">${fmt(u.credit_balance)}</div><button class="topupm" onclick="set({modal:'topup'})">+ Top Up</button></div>
-    <div class="sc"><div class="slbl" style="color:var(--subtle)">Total Orders</div><div class="sval">${S.orders.length}</div><div style="font-size:11px;margin-top:4px;color:var(--muted)">All time</div></div>
+    <div class="sc pr"><div class="slbl">Total Orders</div><div class="sval">${S.orders.length}</div></div>
+    <div class="sc"><div class="slbl" style="color:var(--subtle)">Cart Items</div><div class="sval">${cartCount()}</div></div>
     <div class="sc"><div class="slbl" style="color:var(--subtle)">Instagram</div><div class="sval" style="font-size:14px;padding-top:5px">@${u.instagram_handle||"—"}</div></div>
   </div>
-  <div class="tip">💡 Search your Instagram handle in the bar above to see your growth report and projected follower analytics.</div>
+  <div class="tip">💡 Search your Instagram handle above to see your growth report and projected follower analytics.</div>
   ${S.orders.length?`<div style="font-size:13px;font-weight:700;margin-bottom:8px">Recent orders</div><div class="olist">${S.orders.slice(0,2).map(orow).join("")}</div>`:""}
   <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
     <button onclick="set({tab:'boost'})" style="padding:10px 16px;background:var(--grad);color:white;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">Boost Followers →</button>
@@ -387,7 +420,191 @@ function renderOverview(){
   </div></div>`;
 }
 
-// ─── IG PROFILE ───────────────────────────────────────────────────────────────
+// ─── BOOST FOLLOWERS ───────────────────────────────────────────────────────────
+function renderBoost(){
+  return`<div class="fade-in">
+  <div class="ptitle">Boost Followers</div>
+  <div class="psub">Click a package, enter your Instagram username, then add to cart.</div>
+  <div class="bgrid">
+    ${PACKAGES.map(pkg=>{
+      const showing=S.pkgShowIg[pkg.qty];
+      const igVal=S.pkgIg[pkg.qty]||"";
+      const inCart=S.cart.filter(i=>i.type==="boost"&&i.qty===pkg.qty).length;
+      return`<div class="pkg" style="border-color:${showing?"#ea580c":""}">
+        ${pkg.disc>0?`<div class="dbadge">${pkg.disc}% off</div>`:""}
+        <div class="pqty">${fmtK(pkg.qty)}</div>
+        <div class="plbl">followers</div>
+        ${pkg.disc>0?`<div class="porig">${fmt(pkg.base)}</div>`:`<div class="porig"></div>`}
+        <div class="ppr">${fmt(pkg.price)}</div>
+        <button class="add-btn${showing?" added":""}" onclick="togglePkgIg(${pkg.qty})">
+          ${showing?"▲ Cancel":"+ Select"}
+        </button>
+        ${showing?`<div class="ig-inline show">
+          <input id="ig_${pkg.qty}" type="text" placeholder="your_username" value="${igVal}"
+            oninput="setPkgIg(${pkg.qty},this.value)"
+            onkeydown="if(event.key==='Enter')confirmAddBoost(${pkg.qty})">
+          <button class="confirm-btn" onclick="confirmAddBoost(${pkg.qty})">Add to Cart 🛒</button>
+        </div>`:""}
+        ${inCart>0?`<div style="font-size:10px;color:#15803d;margin-top:4px;font-weight:600">✓ ${inCart} in cart</div>`:""}
+      </div>`;
+    }).join("")}
+  </div>
+  ${cartCount()>0?`<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:11px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div style="font-size:13px;font-weight:600;color:#15803d">🛒 ${cartCount()} item${cartCount()>1?"s":""} in cart — ${fmt(cartTotal())} total</div>
+    <button onclick="set({tab:'cart'})" style="padding:9px 20px;background:var(--grad);border:none;border-radius:9px;color:white;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">View Cart & Checkout →</button>
+  </div>`:""}
+</div>`;
+}
+
+function togglePkgIg(qty){
+  const cur=S.pkgShowIg[qty];
+  set({pkgShowIg:{...S.pkgShowIg,[qty]:!cur}});
+}
+function setPkgIg(qty,val){
+  set({pkgIg:{...S.pkgIg,[qty]:val}});
+}
+function confirmAddBoost(qty){
+  const ig=(document.getElementById("ig_"+qty)?.value||S.pkgIg[qty]||"").trim().replace(/^@/,"");
+  if(!ig){alert("Please enter your Instagram username.");return;}
+  if(!/^[a-zA-Z0-9_.]{1,30}$/.test(ig)){alert("Invalid username. Use only letters, numbers, underscores or dots.");return;}
+  const pkg=PACKAGES.find(p=>p.qty===qty);
+  if(pkg) addBoostToCart(pkg,ig);
+}
+
+// ─── PLANS ─────────────────────────────────────────────────────────────────────
+function renderPlans(){
+  return`<div class="fade-in">
+  <div class="ptitle">Buy a Plan</div>
+  <div class="psub">Monthly managed growth — add to cart and checkout.</div>
+  <div class="plgrid">
+    ${PLANS.map(plan=>`<div class="plcard${plan.popular?" pop":""}">
+      ${plan.popular?`<div class="popbadge">★ Most Popular</div>`:""}
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${plan.popular?"#c2410c":"var(--subtle)"};margin-bottom:5px">${plan.name}</div>
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em;line-height:1">$${plan.price}</div>
+      <div style="font-size:11px;color:var(--subtle);margin-bottom:14px">/month · ${plan.desc}</div>
+      <ul style="list-style:none;margin-bottom:18px">
+        ${plan.features.map(f=>`<li style="font-size:12px;color:#374151;display:flex;gap:6px;margin-bottom:7px"><span style="color:#ea580c">✓</span>${f}</li>`).join("")}
+      </ul>
+      <button onclick='addPlanToCart(${JSON.stringify(plan)})'
+        style="width:100%;padding:10px;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;background:${plan.popular?"var(--grad)":"white"};color:${plan.popular?"white":"#c2410c"};border:${plan.popular?"none":"1.5px solid #fed7aa"}">
+        Add to Cart 🛒
+      </button>
+    </div>`).join("")}
+  </div>
+  ${cartCount()>0?`<div style="margin-top:16px;background:#f0fdf4;border:1px solid #86efac;border-radius:11px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div style="font-size:13px;font-weight:600;color:#15803d">🛒 ${cartCount()} item${cartCount()>1?"s":""} in cart — ${fmt(cartTotal())} total</div>
+    <button onclick="set({tab:'cart'})" style="padding:9px 20px;background:var(--grad);border:none;border-radius:9px;color:white;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">View Cart & Checkout →</button>
+  </div>`:""}
+</div>`;
+}
+
+// ─── CART & CHECKOUT ───────────────────────────────────────────────────────────
+function renderCart(){
+  if(S.cart.length===0) return`<div class="fade-in">
+    <div class="ptitle">Your Cart</div>
+    <div class="cart-empty">
+      <div style="font-size:48px;margin-bottom:12px">🛒</div>
+      <div style="font-weight:700;font-size:16px;margin-bottom:8px">Your cart is empty</div>
+      <div style="color:var(--muted);margin-bottom:20px">Add follower boosts or a plan to get started.</div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button onclick="set({tab:'boost'})" style="padding:10px 20px;background:var(--grad);border:none;border-radius:9px;color:white;font-weight:700;cursor:pointer;font-family:inherit">Boost Followers</button>
+        <button onclick="set({tab:'plans'})" style="padding:10px 20px;background:white;color:#c2410c;border:1.5px solid #fed7aa;border-radius:9px;font-weight:600;cursor:pointer;font-family:inherit">View Plans</button>
+      </div>
+    </div>
+  </div>`;
+
+  // Show checkout steps if in checkout flow
+  if(S.chkStep>=2) return renderCheckoutStep2();
+
+  return`<div class="fade-in checkout-wrap">
+  <div class="ptitle">Your Cart</div>
+  <div class="psub">${S.cart.length} item${S.cart.length>1?"s":""} ready to purchase.</div>
+
+  <div class="cart-list">
+    ${S.cart.map(item=>`<div class="cart-item">
+      <div class="cart-icon">${item.type==="boost"?(ICONS[item.qty]||"🚀"):"📋"}</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px">${item.name}</div>
+        ${item.type==="boost"?`<div style="font-size:11px;color:var(--subtle);margin-top:2px">Followers → @${item.instagram}</div>`:`<div style="font-size:11px;color:var(--subtle);margin-top:2px">Monthly subscription</div>`}
+      </div>
+      <div style="font-weight:700;font-size:14px;color:#c2410c">${fmt(item.price)}</div>
+      <button class="cart-remove" onclick="removeFromCart('${item.id}')" title="Remove">×</button>
+    </div>`).join("")}
+  </div>
+
+  <div class="cart-total">
+    ${S.cart.map(item=>`<div class="cart-total-row"><span>${item.name}</span><span>${fmt(item.price)}</span></div>`).join("")}
+    <div class="cart-total-row big"><span>Total</span><span>${fmt(cartTotal())}</span></div>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button onclick="set({tab:'boost'})" class="cta ghost" style="width:auto;padding:11px 20px">+ Add More</button>
+    <button onclick="set({chkStep:2})" class="cta" style="flex:1">Proceed to Payment →</button>
+  </div>
+</div>`;
+}
+
+function renderCheckoutStep2(){
+  const total=cartTotal();
+  return`<div class="fade-in checkout-wrap">
+  <div class="ptitle">Checkout</div>
+  <div class="psub">Review and pay securely via Stripe.</div>
+
+  <div class="chk-card">
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px">Order summary</div>
+    ${S.cart.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)">
+      <span>${item.name}</span><span style="color:var(--text);font-weight:600">${fmt(item.price)}</span>
+    </div>`).join("")}
+    <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;border-top:1px solid var(--border);margin-top:10px;padding-top:10px;color:#c2410c">
+      <span>Total</span><span>${fmt(total)}</span>
+    </div>
+  </div>
+
+  <div class="pay-box">
+    <div style="font-size:22px">💳</div>
+    <div>
+      <div style="font-weight:700;font-size:13px;color:#15803d">Pay by Card — Powered by Stripe</div>
+      <div class="pay-cards">
+        <span class="pcb visa">VISA</span>
+        <span class="pcb mc">MC</span>
+        <span class="pcb amex">AMEX</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">🔒 You will be taken to Stripe's secure card form. GramLift never sees your card details. After payment, all orders are processed automatically.</div>
+
+  ${S.chkLoading
+    ?`<button class="cta" disabled><span class="spin"></span> Redirecting to Stripe...</button>`
+    :`<button class="cta" onclick="submitCartOrder()">Pay ${fmt(total)} with Card →</button>`}
+
+  <button class="cta ghost" onclick="set({chkStep:1})" style="margin-top:9px">← Back to Cart</button>
+</div>`;
+}
+
+async function submitCartOrder(){
+  if(S.cart.length===0){alert("Your cart is empty.");return;}
+  set({chkLoading:true});
+  try{
+    const res=await fetch('/api/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'cart',cart:S.cart}),
+    });
+    const data=await res.json();
+    if(data.url){
+      window.location.href=data.url;
+    } else {
+      alert('Error: '+(data.error||'Could not start checkout. Is the server running?'));
+      set({chkLoading:false});
+    }
+  }catch(err){
+    alert('Cannot reach server. Make sure it is running.');
+    set({chkLoading:false});
+  }
+}
+
+// ─── IG PROFILE ────────────────────────────────────────────────────────────────
 function renderIGProfile(){
   const p=S.viewedProfile||mockIG(S.user?.instagram_handle||"nicc_yeo");
   const es=p.engagementSources;
@@ -402,17 +619,19 @@ function renderIGProfile(){
   <div class="igbanner">
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:11px">
-        <div class="igav">${p.name[0]}</div>
-        <div><div style="font-weight:700;font-size:14px">@${p.handle}</div>
-        <div style="font-size:11px;color:var(--muted)">${p.name}</div>
-        <div style="margin-top:4px;display:inline-block;background:#111827;color:white;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px">Starter Plan</div></div>
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px">${p.name[0]}</div>
+        <div>
+          <div style="font-weight:700;font-size:14px">@${p.handle}</div>
+          <div style="font-size:11px;color:var(--muted)">${p.name}</div>
+          <div style="margin-top:4px;display:inline-block;background:#111827;color:white;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px">Free</div>
+        </div>
       </div>
       <div class="igsts">
         <div class="igst"><div class="igstv">${fmtNum(p.followers)}</div><div class="igstl">Followers</div></div>
         <div class="igst"><div class="igstv">${fmtNum(p.following)}</div><div class="igstl">Following</div></div>
         <div class="igst"><div class="igstv">${p.posts}</div><div class="igstl">Posts</div></div>
       </div>
-      <button onclick="set({tab:'plans'})" style="padding:10px 18px;background:#111827;color:white;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">Get Started ↗</button>
+      <button onclick="set({tab:'boost'})" style="padding:10px 18px;background:#111827;color:white;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">Get Started ↗</button>
     </div>
   </div>
   <div class="chtcard" style="margin-bottom:14px">
@@ -435,8 +654,8 @@ function renderIGProfile(){
   <div class="charts2">
     <div class="chtcard">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:6px"><div style="width:28px;height:28px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:13px">❤️</div><div style="font-weight:700;font-size:12px">Engagement Sources</div></div>
-        <button onclick="set({tab:'plans'})" style="padding:5px 10px;background:var(--grad);border:none;border-radius:7px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Get Started ↗</button>
+        <div style="font-weight:700;font-size:12px">❤️ Engagement Sources</div>
+        <button onclick="set({tab:'boost'})" style="padding:5px 10px;background:var(--grad);border:none;border-radius:7px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Get Started ↗</button>
       </div>
       <div style="display:flex;gap:12px;align-items:center">
         <div style="width:120px;height:120px;flex-shrink:0"><canvas id="dChart"></canvas></div>
@@ -445,282 +664,23 @@ function renderIGProfile(){
     </div>
     <div class="chtcard">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:6px"><div style="width:28px;height:28px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:13px">📬</div><div style="font-weight:700;font-size:12px">Engagement Trends</div></div>
-        <button onclick="set({tab:'plans'})" style="padding:5px 10px;background:var(--grad);border:none;border-radius:7px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Get Started ↗</button>
+        <div style="font-weight:700;font-size:12px">📬 Engagement Trends</div>
+        <button onclick="set({tab:'boost'})" style="padding:5px 10px;background:var(--grad);border:none;border-radius:7px;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Get Started ↗</button>
       </div>
-      <div class="cmrow"><div class="cm"><strong>${fmtNum(p.totalEngagements)}</strong>Total Engagements</div><div class="cm"><strong>${fmtNum(p.postViewsDay)}</strong>Post Views/Day</div><div class="cm"><strong>${fmtNum(p.profileViewsDay)}</strong>Profile Views/Day</div><div class="cm"><strong>${fmtNum(p.reached)}</strong>Reached</div></div>
+      <div class="cmrow"><div class="cm"><strong>${fmtNum(p.totalEngagements)}</strong>Total</div><div class="cm"><strong>${fmtNum(p.postViewsDay)}</strong>Post Views/Day</div><div class="cm"><strong>${fmtNum(p.profileViewsDay)}</strong>Profile Views/Day</div></div>
       <div style="height:120px;position:relative"><canvas id="bChart"></canvas></div>
     </div>
   </div>
 </div>`;
 }
 
-// ─── BOOST FOLLOWERS ──────────────────────────────────────────────────────────
-function renderBoost(){
-  const u=S.user||MOCK_USER;const sel=S.selPkg;
-  return`<div class="fade-in">
-  <div class="ptitle">Boost Followers</div>
-  <div class="psub">Pick a plan and key in your Instagram username.</div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <span style="font-size:13px;font-weight:700">Choose a follower package</span>
-    <span style="background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;border-radius:20px;padding:3px 11px;font-size:11px;font-weight:700">Balance: ${fmt(u.credit_balance)}</span>
-  </div>
-  <div class="bgrid">
-    ${PACKAGES.map(p=>`<div class="pkg${sel&&sel.qty===p.qty?" sel":""}" onclick="set({selPkg:${JSON.stringify(p)}})">
-      ${p.disc>0?`<div class="dbadge">${p.disc}% off</div>`:""}
-      <div class="pqty">${fmtK(p.qty)}</div><div class="plbl">followers</div>
-      ${p.disc>0?`<div class="porig">${fmt(p.base)}</div>`:`<div class="porig"></div>`}
-      <div class="ppr">${fmt(p.price)}</div>
-    </div>`).join("")}
-  </div>
-  ${sel?`<div class="hp">
-    <div class="hp-top">
-      <div>
-        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Selected package</div>
-        <div style="font-size:14px;font-weight:700">${fmtK(sel.qty)} Real Followers${sel.disc>0?` <span style="color:#c2410c;font-size:12px">(${sel.disc}% off)</span>`:""}</div>
-      </div>
-      <div class="hp-price">${fmt(sel.price)}</div>
-    </div>
-    <div style="font-size:12px;font-weight:700;margin-bottom:6px">Enter your Instagram username</div>
-    <input class="uinput${S.buyIgErr?" err":""}" id="boostIg" type="text"
-      placeholder="your_username  (no @ needed — must be a public account)"
-      value="${S.buyIg}"
-      oninput="set({buyIg:this.value,buyIgErr:''})">
-    ${S.buyIgErr?`<div class="errtxt">${S.buyIgErr}</div>`:""}
-    <div style="font-size:10px;color:var(--subtle);margin-bottom:10px">Private accounts cannot receive followers. Make sure your account is set to public.</div>
-    <button onclick="openBoostCheckout()" style="width:100%;padding:11px;background:var(--grad);border:none;border-radius:9px;color:white;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px">
-      Proceed to Checkout → ${fmt(sel.price)}
-    </button>
-    <div class="chips" style="margin-top:10px">
-      <span class="chip">✓ Delivery starts in minutes</span>
-      <span class="chip">✓ Real accounts</span>
-      <span class="chip">✓ 90-day refill guarantee</span>
-    </div>
-  </div>`:`<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:11px;padding:16px;text-align:center;color:#c2410c;font-weight:600;font-size:13px">☝ Select a package above to continue</div>`}
-</div>`;
-}
-
-function openBoostCheckout(){
-  const ig=(document.getElementById("boostIg")?.value||S.buyIg).trim().replace(/^@/,"");
-  if(!ig){set({buyIgErr:"Instagram username is required."});return;}
-  if(!/^[a-zA-Z0-9_.]{1,30}$/.test(ig)){set({buyIgErr:"Invalid format. Use only letters, numbers, underscores or dots."});return;}
-  set({buyIg:ig,buyIgErr:"",modal:"buy"});
-}
-
-// ─── BUY MODAL — calls real backend ──────────────────────────────────────────
-function renderBuyModal(){
-  const pkg=S.selPkg;if(!pkg)return"";
-  return`<div class="overlay" onclick="if(event.target===this)set({modal:null})">
-  <div class="modal">
-    <div class="mh">
-      <div><div style="font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Order Summary</div>
-      <div style="font-size:17px;font-weight:800;font-family:'Sora',sans-serif">${fmtK(pkg.qty)} Followers</div></div>
-      <button class="mcls" onclick="set({modal:null})">×</button>
-    </div>
-    <div class="sumbox">
-      <div class="sr"><span>Package</span><span>${fmtK(pkg.qty)} real followers</span></div>
-      <div class="sr"><span>For</span><span style="font-weight:700">@${S.buyIg}</span></div>
-      <div class="sr"><span>Delivery estimate</span><span>1–3 business days</span></div>
-      <div class="sr"><span>Refill guarantee</span><span>90 days</span></div>
-      ${pkg.disc>0?`<div class="sr"><span>Discount</span><span style="color:#15803d">−${pkg.disc}%</span></div>`:""}
-      <div class="sr total"><span>Total</span><span>${fmt(pkg.price)} USD</span></div>
-    </div>
-    <div class="fl"><label>Email for receipt (optional)</label><input id="buyEmail" type="email" placeholder="you@email.com" value="${S.buyEmail}" oninput="set({buyEmail:this.value})"></div>
-    <div style="font-size:12px;font-weight:700;margin-bottom:8px">Payment Method</div>
-    <div class="pmethods">
-      <div class="popt${S.buyPayMethod==="stripe"?" sel":""}" onclick="set({buyPayMethod:'stripe'})">
-        <div class="plgo">💳</div><div class="pnm">Card Payment</div>
-        <div class="pcards"><span class="pcb visa">VISA</span><span class="pcb mc">MC</span><span class="pcb amex">AMEX</span></div>
-        <div class="psub" style="color:#15803d;margin-top:4px">Visa · Mastercard · Amex</div>
-      </div>
-      <div class="popt${S.buyPayMethod==="paypal"?" sel":""}" onclick="set({buyPayMethod:'paypal'})">
-        <div class="plgo">🅿️</div><div class="pnm">PayPal</div>
-        <div class="pcards"><span class="pcb visa">VISA</span><span class="pcb mc">MC</span><span class="pcb pp">PP</span></div>
-        <div class="psub" style="color:#15803d;margin-top:4px">Secure — PayPal</div>
-      </div>
-    </div>
-    <div class="tip">🔒 You'll be taken to ${S.buyPayMethod==="stripe"?"Stripe's secure card form":"PayPal's checkout"} to complete payment. GramLift never handles your card details.</div>
-    ${S.buyLoading
-      ?`<button class="ctabtn" disabled><div class="spin"></div>Redirecting to checkout...</button>`
-      :`<button class="ctabtn" onclick="submitBoostOrder()">
-        Pay ${fmt(pkg.price)} with Card →
-      </button>`}
-    <p style="text-align:center;font-size:10px;color:var(--subtle);margin-top:8px">After payment is confirmed, your order is processed and delivered automatically.</p>
-  </div></div>`;
-}
-
-// Calls backend -> gets Stripe URL -> redirects to Stripe payment page
-async function submitBoostOrder(){
-  const pkg=S.selPkg;
-  set({buyLoading:true});
-  try {
-    const res = await fetch('/api/create-checkout', {
-      method:  "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({
-        type:              "boost",
-        quantity:          pkg.qty,
-        instagramUsername: S.buyIg,
-        email:             S.buyEmail||undefined,
-      }),
-    });
-    const data = await res.json();
-    if(data.url){
-      // Redirect to real Stripe hosted checkout page
-      window.location.href = data.url;
-    } else {
-      alert("Error: " + (data.error||"Could not create checkout session. Is the backend running?"));
-      set({buyLoading:false});
-    }
-  } catch(err) {
-    alert("Cannot reach backend. Make sure your server is running at " + API_BASE);
-    set({buyLoading:false});
-  }
-}
-
-// ─── BUY A PLAN ───────────────────────────────────────────────────────────────
-function renderPlans(){
-  return`<div class="fade-in">
-  <div class="ptitle">Buy a Plan</div>
-  <div class="psub">Monthly managed growth — pay securely and start growing today.</div>
-  <div class="plgrid">
-    ${PLANS.map(plan=>`<div class="plcard${plan.popular?" pop":""}">
-      ${plan.popular?`<div class="popbadge">★ Most Popular</div>`:""}
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${plan.popular?"#c2410c":"var(--subtle)"};margin-bottom:5px">${plan.name}</div>
-      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em;line-height:1">$${plan.price}</div>
-      <div style="font-size:11px;color:var(--subtle);margin-bottom:14px">/month · ${plan.desc}</div>
-      <ul style="list-style:none;margin-bottom:18px">
-        ${plan.features.map(f=>`<li style="font-size:12px;color:#374151;display:flex;gap:6px;margin-bottom:7px"><span style="color:#ea580c">✓</span>${f}</li>`).join("")}
-      </ul>
-      <button onclick='openPlanCheckout(${JSON.stringify(plan)})'
-        style="width:100%;padding:10px;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;background:${plan.popular?"var(--grad)":"white"};color:${plan.popular?"white":"#c2410c"};border:${plan.popular?"none":"1.5px solid #fed7aa"}">
-        Get Started →
-      </button>
-    </div>`).join("")}
-  </div></div>`;
-}
-function openPlanCheckout(plan){set({selPlan:plan,planStep:1,planIg:"",planIgErr:"",planEmail:"",modal:"planchk"});}
-
-// ─── PLAN CHECKOUT MODAL — calls real backend ─────────────────────────────────
-function renderPlanModal(){
-  const plan=S.selPlan;if(!plan)return"";
-  return`<div class="overlay" onclick="if(event.target===this)set({modal:null})">
-  <div class="modal">
-    <div class="mh">
-      <div><div style="font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">${plan.name} Plan · $${plan.price}/mo</div>
-      <div style="font-size:17px;font-weight:800;font-family:'Sora',sans-serif">Complete Your Order</div></div>
-      <button class="mcls" onclick="set({modal:null})">×</button>
-    </div>
-    <div class="steps">
-      <div class="step${S.planStep===1?" active":""}${S.planStep>1?" done":""}"><span class="stepn">${S.planStep>1?"✓":"1"}</span>Your Details</div>
-      <div class="step${S.planStep===2?" active":""}"><span class="stepn">2</span>Payment</div>
-    </div>
-    ${S.planStep===1?renderPlanStep1(plan):renderPlanStep2(plan)}
-  </div></div>`;
-}
-function renderPlanStep1(plan){
-  return`<div>
-  <div class="sumbox" style="margin-bottom:13px">
-    <div class="sr"><span>Plan</span><span>${plan.name}</span></div>
-    <div class="sr"><span>Growth</span><span>${plan.desc}</span></div>
-    <div class="sr"><span>Billing</span><span>Monthly</span></div>
-    <div class="sr total"><span>Total today</span><span>$${plan.price} USD</span></div>
-  </div>
-  <div class="fl"><label>Instagram Username *</label>
-    <input id="planIg" type="text" placeholder="your_username  (no @, must be public)" value="${S.planIg}" class="${S.planIgErr?"ferr":""}">
-    ${S.planIgErr?`<div style="font-size:11px;color:#dc2626;margin-top:3px">${S.planIgErr}</div>`:""}
-    <div style="font-size:10px;color:var(--subtle);margin-top:3px">Your account must be set to public to receive followers.</div>
-  </div>
-  <div class="fl"><label>Email for receipt (optional)</label><input id="planEmail" type="email" placeholder="you@email.com" value="${S.planEmail}"></div>
-  <button class="ctabtn" onclick="validatePlanStep1()">Continue → Choose Payment</button>
-</div>`;
-}
-function validatePlanStep1(){
-  const ig=(document.getElementById("planIg")?.value||"").trim().replace(/^@/,"");
-  const email=document.getElementById("planEmail")?.value||"";
-  if(!ig){set({planIgErr:"Instagram username is required."});return;}
-  if(!/^[a-zA-Z0-9_.]{1,30}$/.test(ig)){set({planIgErr:"Invalid format."});return;}
-  set({planIg:ig,planEmail:email,planIgErr:"",planStep:2});
-}
-function renderPlanStep2(plan){
-  return`<div>
-  <div class="sumbox" style="margin-bottom:13px">
-    <div class="sr"><span>Plan</span><span>${plan.name} · $${plan.price}/mo</span></div>
-    <div class="sr"><span>Instagram</span><span style="font-weight:700">@${S.planIg}</span></div>
-    <div class="sr total"><span>Charge today</span><span>$${plan.price} USD</span></div>
-  </div>
-  <div style="font-size:12px;font-weight:700;margin-bottom:8px">Payment Method</div>
-  <div class="pmethods">
-    <div class="popt${S.planPay==="stripe"?" sel":""}" onclick="set({planPay:'stripe'})">
-      <div class="plgo">💳</div><div class="pnm">Card Payment</div>
-      <div class="pcards"><span class="pcb visa">VISA</span><span class="pcb mc">MC</span><span class="pcb amex">AMEX</span></div>
-      <div class="psub" style="color:#15803d;margin-top:4px">Visa · Mastercard · Amex</div>
-    </div>
-    <div class="popt${S.planPay==="paypal"?" sel":""}" onclick="set({planPay:'paypal'})">
-      <div class="plgo">🅿️</div><div class="pnm">PayPal</div>
-      <div class="pcards"><span class="pcb visa">VISA</span><span class="pcb mc">MC</span><span class="pcb pp">PP</span></div>
-      <div class="psub" style="color:#15803d;margin-top:4px">Secure — PayPal</div>
-    </div>
-  </div>
-  <div class="tip">🔒 You'll be taken to ${S.planPay==="stripe"?"Stripe's secure card form":"PayPal's checkout"} to complete payment.</div>
-  ${S.planLoading
-    ?`<button class="ctabtn" disabled><div class="spin"></div>Redirecting to checkout...</button>`
-    :`<button class="ctabtn" onclick="submitPlanOrder()">
-      Pay $${plan.price} with Card →
-    </button>`}
-  <button class="ctabtn ghost" onclick="set({planStep:1})" style="margin-top:8px">← Back</button>
-</div>`;
-}
-async function submitPlanOrder(){
-  const plan=S.selPlan;
-  set({planLoading:true});
-  try {
-    const res = await fetch('/api/create-checkout', {
-      method:  "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({
-        type:              "plan",
-        planId:            plan.id,
-        instagramUsername: S.planIg,
-        email:             S.planEmail||undefined,
-      }),
-    });
-    const data = await res.json();
-    if(data.url){
-      window.location.href = data.url;
-    } else {
-      alert("Error: " + (data.error||"Could not create checkout session."));
-      set({planLoading:false});
-    }
-  } catch(err) {
-    alert("Cannot reach backend server. Is it running?");
-    set({planLoading:false});
-  }
-}
-
-// ─── TOPUP MODAL ──────────────────────────────────────────────────────────────
-function renderTopupModal(){
-  return`<div class="overlay" onclick="if(event.target===this)set({modal:null})">
-  <div class="modal">
-    <div class="mh"><div style="font-size:17px;font-weight:800;font-family:'Sora',sans-serif">Top Up Credits</div><button class="mcls" onclick="set({modal:null})">×</button></div>
-    <div class="tgrid">
-      ${TOPUP.map(a=>`<button class="tamtbtn${S.topupAmt===a?" sel":""}" onclick="set({topupAmt:${a}})">
-        <div class="tamtval">$${a}</div><div style="font-size:10px;color:var(--subtle);margin-top:2px">$${a} credits</div>
-      </button>`).join("")}
-    </div>
-    <div class="tip">💡 This opens Stripe Checkout — you pay, credits are added automatically.</div>
-    <button class="ctabtn" onclick="set({modal:null})">Add $${S.topupAmt} via Stripe →</button>
-  </div></div>`;
-}
-
-// ─── ORDERS ───────────────────────────────────────────────────────────────────
+// ─── ORDERS ────────────────────────────────────────────────────────────────────
 function orow(o){
-  const icon=ICONS[String(o.quantity)]||"📦";
   return`<div class="orow">
   <div style="display:flex;align-items:center;gap:9px">
-    <div class="oicon">${icon}</div>
+    <div class="oicon">${ICONS[String(o.quantity)]||"📦"}</div>
     <div><div style="font-weight:600;font-size:13px">${o.package_name}</div>
-    <div style="font-size:10px;color:var(--subtle);margin-top:1px">${fmtDate(o.created_at)} · Ref: ${o.id}</div></div>
+    <div style="font-size:10px;color:var(--subtle)">${fmtDate(o.created_at)} · Ref: ${o.id}</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:9px">
     <span class="badge ${o.status}">${o.status}</span>
@@ -737,7 +697,7 @@ function renderOrders(){
   </div></div>`;
 }
 
-// ─── SETTINGS ─────────────────────────────────────────────────────────────────
+// ─── SETTINGS ──────────────────────────────────────────────────────────────────
 function renderSettings(){
   const u=S.user||MOCK_USER;
   return`<div class="fade-in">
@@ -745,13 +705,8 @@ function renderSettings(){
   <div class="setcard"><h3>Profile</h3>
     <div class="fl"><label>Email</label><input type="email" value="${u.email}" disabled style="background:#f9fafb;color:var(--muted)"></div>
     <div class="fl"><label>Instagram Username</label><input type="text" id="settingsHandle" placeholder="your_username" value="${u.instagram_handle||""}"></div>
-    <div class="fl"><label>Full Name</label><input type="text" placeholder="Your name"></div>
     <button class="savebtn" onclick="saveSettings()">Save Changes</button>
     ${S.settingsSaved?`<span style="margin-left:10px;color:#15803d;font-size:12px">✓ Saved!</span>`:""}
-  </div>
-  <div class="setcard"><h3>Backend Status</h3>
-    <button onclick="checkHealth()" style="padding:8px 16px;background:var(--grad);border:none;border-radius:9px;color:white;font-weight:700;cursor:pointer;font-family:inherit;font-size:12px">Check Server Status</button>
-    <div id="healthResult" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>
   </div></div>`;
 }
 function saveSettings(){
@@ -759,20 +714,10 @@ function saveSettings(){
   set({user:S.user?{...S.user,instagram_handle:h}:S.user,settingsSaved:true});
   setTimeout(()=>set({settingsSaved:false}),2500);
 }
-async function checkHealth(){
-  document.getElementById("healthResult").innerHTML="Checking...";
-  try {
-    const r=await fetch(`${API_BASE}/api/health`);
-    const d=await r.json();
-    document.getElementById("healthResult").innerHTML=`✅ Server online · Mode: <strong>${d.mode}</strong>`;
-  } catch {
-    document.getElementById("healthResult").innerHTML=`❌ Cannot reach server at ${API_BASE} — is it running?`;
-  }
-}
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
+// ─── LOGIN ─────────────────────────────────────────────────────────────────────
 function renderLogin(){
-  return`<div class="lwrap">
+  return`<div class="login-wrap">
   <nav class="lnav"><div class="logo"><span>GramLift</span></div></nav>
   <div class="lctr"><div class="lcard">
     <div class="tabs">
