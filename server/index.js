@@ -34,22 +34,22 @@ app.use(express.static(path.join(__dirname, "../public")));
 // ─── PACKAGES ─────────────────────────────────────────────────────────────────
 // Edit prices here. Must match the PACKAGES array in public/index.html exactly.
 const PACKAGES = {
-  100:    { price: 0.01, name: "100 Followers" },
-  250:    { price: 0.01, name: "250 Followers" },
-  500:    { price: 0.01, name: "500 Followers" },
-  1000:   { price: 0.01, name: "1,000 Followers" },
-  2000:   { price: 0.01, name: "2,000 Followers" },
-  5000:   { price: 0.01, name: "5,000 Followers" },
-  10000:  { price: 0.01, name: "10,000 Followers" },
-  20000:  { price: 0.01, name: "20,000 Followers" },
-  50000:  { price: 0.01, name: "50,000 Followers" },
-  100000: { price: 0.01, name: "100,000 Followers" },
+  100:    { price: 1.00, name: "100 Followers" },
+  250:    { price: 1.00, name: "250 Followers" },
+  500:    { price: 1.00, name: "500 Followers" },
+  1000:   { price: 1.00, name: "1,000 Followers" },
+  2000:   { price: 1.00, name: "2,000 Followers" },
+  5000:   { price: 1.00, name: "5,000 Followers" },
+  10000:  { price: 1.00, name: "10,000 Followers" },
+  20000:  { price: 1.00, name: "20,000 Followers" },
+  50000:  { price: 1.00, name: "50,000 Followers" },
+  100000: { price: 1.00, name: "100,000 Followers" },
 };
 
 const PLANS = {
-  starter: { price: 19, name: "Starter Plan", quantity: 500  },
-  creator: { price: 49, name: "Creator Plan", quantity: 1500 },
-  pro:     { price: 99, name: "Pro Plan",     quantity: 4000 },
+  starter: { price: 1.00, name: "Starter Plan", quantity: 500  },
+  creator: { price: 1.00, name: "Creator Plan", quantity: 1500 },
+  pro:     { price: 1.00, name: "Pro Plan",     quantity: 4000 },
 };
 
 // ─── SOCIALLEGEND ─────────────────────────────────────────────────────────────
