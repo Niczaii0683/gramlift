@@ -34,8 +34,8 @@ app.use(express.static(path.join(__dirname, "../public")));
 // ─── PACKAGES ─────────────────────────────────────────────────────────────────
 // Edit prices here. Must match the PACKAGES array in public/index.html exactly.
 const PACKAGES = {
-  100:    { price: 0.01, name: "100 Followers" },
-  250:    { price: 0.01, name: "250 Followers" },
+  100:    { price: 1.00, name: "100 Followers" },
+  250:    { price: 1.00, name: "250 Followers" },
   500:    { price: 0.01, name: "500 Followers" },
   1000:   { price: 0.01, name: "1,000 Followers" },
   2000:   { price: 0.01, name: "2,000 Followers" },
