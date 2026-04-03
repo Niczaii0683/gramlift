@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,8 +195,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 // When you change a price here, also change the matching price in server/index.js
 // Both files must always have the same prices.
 const PACKAGES=[
-  {qty:100,   price:1.00, base:1.00,  disc:0},
-  {qty:250,   price:1.00, base:1.00,  disc:0},
+  {qty:100,   price:0.01, base:0.01,  disc:0},
+  {qty:250,   price:0.01, base:0.01,  disc:0},
   {qty:500,   price:0.01, base:0.01,  disc:0},
   {qty:1000,  price:0.01, base:0.01,  disc:0},
   {qty:2000,  price:0.01, base:0.01,  disc:0},
@@ -208,9 +207,9 @@ const PACKAGES=[
   {qty:100000,price:0.01, base:0.01,  disc:0},
 ];
 const PLANS=[
-  {id:"starter",name:"Starter",price:1.00,popular:false,desc:"500 followers/mo",features:["500 real followers / month","Audience targeting","Basic analytics","Email support"]},
-  {id:"creator",name:"Creator",price:1.00,popular:true, desc:"1,500 followers/mo",features:["1,500 real followers / month","Advanced targeting","Priority growth","Live analytics","Chat support"]},
-  {id:"pro",    name:"Pro",    price:1.00,popular:false,desc:"4,000 followers/mo",features:["4,000 real followers / month","Elite targeting","Account manager","Full analytics","24/7 support"]},
+  {id:"starter",name:"Starter",price:0.01,popular:false,desc:"500 followers/mo",features:["500 real followers / month","Audience targeting","Basic analytics","Email support"]},
+  {id:"creator",name:"Creator",price:0.01,popular:true, desc:"1,500 followers/mo",features:["1,500 real followers / month","Advanced targeting","Priority growth","Live analytics","Chat support"]},
+  {id:"pro",    name:"Pro",    price:0.01,popular:false,desc:"4,000 followers/mo",features:["4,000 real followers / month","Elite targeting","Account manager","Full analytics","24/7 support"]},
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -442,7 +441,7 @@ function renderBoost(){
         </button>
         ${showing?`<div class="ig-inline show">
           <input id="ig_${pkg.qty}" type="text" placeholder="your_username" value="${igVal}"
-            oninput="setPkgIg(${pkg.qty},this.value)"
+            oninput=""
             onkeydown="if(event.key==='Enter')confirmAddBoost(${pkg.qty})">
           <button class="confirm-btn" onclick="confirmAddBoost(${pkg.qty})">Add to Cart 🛒</button>
         </div>`:""}
@@ -461,13 +460,19 @@ function togglePkgIg(qty){
   const cur=S.pkgShowIg[qty];
   set({pkgShowIg:{...S.pkgShowIg,[qty]:!cur}});
 }
-function setPkgIg(qty,val){
-  set({pkgIg:{...S.pkgIg,[qty]:val}});
-}
+function setPkgIg(qty,val){ S.pkgIg[qty]=val; }  // update without re-render
 function confirmAddBoost(qty){
-  const ig=(document.getElementById("ig_"+qty)?.value||S.pkgIg[qty]||"").trim().replace(/^@/,"");
-  if(!ig){alert("Please enter your Instagram username.");return;}
-  if(!/^[a-zA-Z0-9_.]{1,30}$/.test(ig)){alert("Invalid username. Use only letters, numbers, underscores or dots.");return;}
+  const input=document.getElementById("ig_"+qty);
+  const ig=(input?.value||"").trim().replace(/^@/,"");
+  if(!ig){
+    if(input){input.style.borderColor="#dc2626"; input.placeholder="Please enter username!";}
+    return;
+  }
+  if(!/^[a-zA-Z0-9_.]{1,30}$/.test(ig)){
+    if(input){input.style.borderColor="#dc2626";}
+    alert("Invalid username. Use only letters, numbers, underscores or dots.");
+    return;
+  }
   const pkg=PACKAGES.find(p=>p.qty===qty);
   if(pkg) addBoostToCart(pkg,ig);
 }
@@ -556,6 +561,12 @@ function renderCheckoutStep2(){
     ${S.cart.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)">
       <span>${item.name}</span><span style="color:var(--text);font-weight:600">${fmt(item.price)}</span>
     </div>`).join("")}
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)">
+      <span>Delivery</span><span style="color:var(--text);font-weight:600">Within 24 hours</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)">
+      <span>Guarantee</span><span style="color:var(--text);font-weight:600">30-day refill</span>
+    </div>
     <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;border-top:1px solid var(--border);margin-top:10px;padding-top:10px;color:#c2410c">
       <span>Total</span><span>${fmt(total)}</span>
     </div>
@@ -574,6 +585,9 @@ function renderCheckoutStep2(){
   </div>
 
   <div class="tip">🔒 You will be taken to Stripe's secure card form. GramLift never sees your card details. After payment, all orders are processed automatically.</div>
+  <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;padding:9px 12px;font-size:12px;color:#1e40af;margin-bottom:12px;">
+    📋 Every order is recorded at <b>gramlift.onrender.com/api/orders</b> — bookmark this to track all purchases. You can also verify delivery in your SocialLegend dashboard.
+  </div>
 
   ${S.chkLoading
     ?`<button class="cta" disabled><span class="spin"></span> Redirecting to Stripe...</button>`
