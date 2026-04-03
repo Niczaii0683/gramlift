@@ -34,8 +34,8 @@ app.use(express.static(path.join(__dirname, "../public")));
 // ─── PACKAGES ─────────────────────────────────────────────────────────────────
 // Edit prices here. Must match the PACKAGES array in public/index.html exactly.
 const PACKAGES = {
-  100:    { price: 1.00, name: "100 Followers" },
-  250:    { price: 1.00, name: "250 Followers" },
+  100:    { price: 0.01, name: "100 Followers" },
+  250:    { price: 0.01, name: "250 Followers" },
   500:    { price: 0.01, name: "500 Followers" },
   1000:   { price: 0.01, name: "1,000 Followers" },
   2000:   { price: 0.01, name: "2,000 Followers" },
@@ -47,26 +47,30 @@ const PACKAGES = {
 };
 
 const PLANS = {
-  starter: { price: 1.00, name: "Starter Plan", quantity: 500  },
-  creator: { price: 1.00, name: "Creator Plan", quantity: 1500 },
-  pro:     { price: 1.00, name: "Pro Plan",     quantity: 4000 },
+  starter: { price: 19, name: "Starter Plan", quantity: 500  },
+  creator: { price: 49, name: "Creator Plan", quantity: 1500 },
+  pro:     { price: 99, name: "Pro Plan",     quantity: 4000 },
 };
 
 // ─── SOCIALLEGEND ─────────────────────────────────────────────────────────────
-// Called automatically after payment is confirmed.
+// SERVICE CODE — change this number if SocialLegend updates their service ID
+// Current: 5021 = Instagram Followers [120k/Day - 60 Day Refill - Real Hq account]
+const SOCIALLEGEND_SERVICE_ID = process.env.SOCIALLEGEND_SERVICE_ID || "5021";
+
 // username "nicc_yeo"  →  link "https://www.instagram.com/nicc_yeo/"
-// quantity is exactly what the customer bought (e.g. 5000)
+// quantity is exactly what the customer bought (e.g. 100)
 async function callSocialLegend(instagramUsername, quantity) {
   const igUrl = `https://www.instagram.com/${instagramUsername}/`;
 
   console.log("\n[SocialLegend] Placing order...");
+  console.log("  Service  :", SOCIALLEGEND_SERVICE_ID);
   console.log("  URL      :", igUrl);
   console.log("  Quantity :", quantity);
 
   const body = new URLSearchParams({
     key:      process.env.SOCIALLEGEND_API_KEY,
     action:   "add",
-    service:  "4997",
+    service:  SOCIALLEGEND_SERVICE_ID,
     link:     igUrl,
     quantity: String(quantity),
   });
@@ -90,8 +94,36 @@ async function callSocialLegend(instagramUsername, quantity) {
   return data;
 }
 
-// Simple order log — replace with Supabase when you're ready
+// In-memory order log (clears on server restart)
 const orders = [];
+
+// ─── GOOGLE SHEETS LOGGER ─────────────────────────────────────────────────────
+// Setup: see README — takes 10 minutes, gives you permanent order records
+// Add GOOGLE_SHEET_WEBHOOK_URL to Render environment variables to enable
+async function logToGoogleSheets(record) {
+  const url = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        timestamp:   record.createdAt,
+        orderId:     record.id,
+        instagram:   record.instagramUsername,
+        package:     record.packageName,
+        quantity:    record.quantity,
+        amountPaid:  record.amountPaid,
+        status:      record.status,
+        supplierId:  record.supplierOrderId || "—",
+        sessionId:   record.sessionId || "—",
+      }),
+    });
+    console.log("[Sheets] ✅ Logged to Google Sheets");
+  } catch (err) {
+    console.error("[Sheets] ❌ Log failed:", err.message);
+  }
+}
 
 async function fulfillOrder({ sessionId, instagramUsername, quantity, amountPaid, packageName }) {
   const record = {
@@ -117,6 +149,9 @@ async function fulfillOrder({ sessionId, instagramUsername, quantity, amountPaid
     record.error  = err.message;
     console.error("❌ FAILED —", err.message);
   }
+
+  // Always log to Google Sheets (captures both success and failure)
+  await logToGoogleSheets(record);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -285,9 +320,18 @@ app.get("/api/health", (req, res) => {
 });
 
 // View all orders (for you to debug — protect with a password before launch)
-app.get("/api/orders", (req, res) => res.json(orders));
+app.get("/api/orders", (req, res) => {
+  res.json({
+    count: orders.length,
+    note: orders.length === 0
+      ? "No orders in memory. Server restarts clear this list. Check Google Sheets for permanent records."
+      : "Live orders from this server session",
+    stripe_dashboard: "https://dashboard.stripe.com/payments",
+    orders,
+  });
+});
 
-// Quick test — checks your SocialLegend account balance
+// Check SocialLegend account balance
 app.get("/api/test-sl", async (req, res) => {
   try {
     const body = new URLSearchParams({ key: process.env.SOCIALLEGEND_API_KEY, action: "balance" });
@@ -295,9 +339,56 @@ app.get("/api/test-sl", async (req, res) => {
       method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(),
     });
     const data = await r.json();
-    res.json({ connected: true, data });
+    res.json({ connected: true, serviceId: SOCIALLEGEND_SERVICE_ID, data });
   } catch (err) {
     res.json({ connected: false, error: err.message });
+  }
+});
+
+// ── TEST: Place a REAL order to SocialLegend (use carefully — charges your SL balance)
+// Call: POST /api/test-sl-order  with body: { instagram: "username", quantity: 100 }
+app.post("/api/test-sl-order", async (req, res) => {
+  const { instagram, quantity } = req.body;
+  if (!instagram || !quantity) {
+    return res.status(400).json({ error: "Need instagram and quantity in request body" });
+  }
+  const cleanIg = instagram.trim().replace(/^@/, "");
+  if (!/^[a-zA-Z0-9_.]{1,30}$/.test(cleanIg)) {
+    return res.status(400).json({ error: "Invalid Instagram username" });
+  }
+  try {
+    console.log(`\n[TEST ORDER] Placing test order: @${cleanIg} x${quantity}`);
+    const result = await callSocialLegend(cleanIg, Number(quantity));
+    res.json({
+      success: true,
+      message: "Order placed successfully on SocialLegend",
+      supplierOrderId: result.order,
+      instagram: cleanIg,
+      quantity: Number(quantity),
+      igUrl: `https://www.instagram.com/${cleanIg}/`,
+      serviceId: SOCIALLEGEND_SERVICE_ID,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── CHECK status of a SocialLegend order
+// Call: GET /api/sl-status/:orderId
+app.get("/api/sl-status/:orderId", async (req, res) => {
+  try {
+    const body = new URLSearchParams({
+      key:    process.env.SOCIALLEGEND_API_KEY,
+      action: "status",
+      order:  req.params.orderId,
+    });
+    const r = await fetch("https://sociallegend.com.my/api/v2", {
+      method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(),
+    });
+    const data = await r.json();
+    res.json({ orderId: req.params.orderId, ...data });
+  } catch (err) {
+    res.json({ error: err.message });
   }
 });
 
