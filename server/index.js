@@ -47,9 +47,9 @@ const PACKAGES = {
 };
 
 const PLANS = {
-  starter: { price: 19, name: "Starter Plan", quantity: 500  },
-  creator: { price: 49, name: "Creator Plan", quantity: 1500 },
-  pro:     { price: 99, name: "Pro Plan",     quantity: 4000 },
+  starter: { price: 1.00, name: "Starter Plan", quantity: 500  },
+  creator: { price: 1.00, name: "Creator Plan", quantity: 1500 },
+  pro:     { price: 1.00, name: "Pro Plan",     quantity: 4000 },
 };
 
 // ─── SOCIALLEGEND ─────────────────────────────────────────────────────────────
