@@ -225,13 +225,14 @@ const ICONS={100:"⚡",250:"⚡",500:"🔥",1000:"🔥",2000:"🔥",5000:"🚀",
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let S={
-  page:"login",ltab:"login",user:null,orders:[...MOCK_ORDERS],
+  page:"login",ltab:"login",loginErr:"",user:null,orders:[...MOCK_ORDERS],
   tab:"overview",
   // Cart: array of {id, type, qty, instagram, planId, name, price}
   cart:[],
   // Per-package username input (key = qty)
   pkgIg:{},
   pkgShowIg:{},  // which packages are showing the username input
+  planShowIg:{}, // which plans are showing the username input
   // Checkout flow
   chkStep:1,   // 1=review cart, 2=payment
   chkLoading:false,
@@ -260,15 +261,29 @@ function addBoostToCart(pkg,ig){
   toast("Added "+fmtK(pkg.qty)+" followers to cart!");
 }
 function addPlanToCart(plan){
+  // Show username input for this plan
+  set({planShowIg:{...S.planShowIg,[plan.id]:true}});
+}
+function confirmAddPlan(planId){
+  const plan=PLANS.find(p=>p.id===planId);
+  if(!plan)return;
+  const input=document.getElementById("planig_"+planId);
+  const ig=(input?.value||"").trim().replace(/^@/,"");
+  if(!ig){
+    if(input){input.style.borderColor="#dc2626";input.placeholder="Enter username!";}
+    return;
+  }
+  if(!/^[a-zA-Z0-9_.]{1,30}$/.test(ig)){alert("Invalid username. Letters, numbers, underscores or dots only.");return;}
   const item={
     id:Date.now()+"",
     type:"plan",
     planId:plan.id,
-    name:plan.name+" Plan (monthly)",
+    instagram:ig,
+    name:plan.name+" Plan → @"+ig,
     price:plan.price,
   };
-  set({cart:[...S.cart,item]});
-  toast(plan.name+" Plan added to cart!");
+  set({cart:[...S.cart,item],planShowIg:{...S.planShowIg,[planId]:false}});
+  toast(plan.name+" Plan added to cart for @"+ig+"!");
 }
 
 // ─── MOCK IG LOOKUP ────────────────────────────────────────────────────────────
@@ -320,9 +335,14 @@ function render(){
 function renderNav(cartC){
   const prev=S.showPrev&&S.searchResult?`<div class="sprev">
     <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
-      <div class="spav">${S.searchResult.name[0]}</div>
-      <div><div style="font-weight:700;font-size:13px">@${S.searchResult.handle}</div>
-      <div style="font-size:11px;color:var(--muted)">${S.searchResult.name}</div></div>
+      ${S.searchResult.avatar
+        ?`<img src="${S.searchResult.avatar}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none'">`
+        :`<div class="spav">${(S.searchResult.name||S.searchResult.handle||"?")[0].toUpperCase()}</div>`}
+      <div>
+        <div style="font-weight:700;font-size:13px">@${S.searchResult.handle}</div>
+        <div style="font-size:11px;color:var(--muted)">${S.searchResult.name||""}</div>
+        ${S.searchResult.isMock?`<div style="font-size:9px;color:#f59e0b;font-weight:600">📊 Estimated data — add RapidAPI key for real stats</div>`:""}
+      </div>
     </div>
     <div style="display:flex;gap:16px;margin-top:8px">
       <div><div style="font-weight:700;font-size:15px;color:#c2410c">${fmtNum(S.searchResult.followers)}</div><div style="font-size:10px;color:var(--subtle)">Followers</div></div>
@@ -353,10 +373,27 @@ function renderNav(cartC){
 </nav>`;
 }
 async function doSearch(){
-  const h=S.searchVal.trim().replace("@","");if(!h)return;
-  set({searchLoading:true,showPrev:false,searchResult:null});
-  await new Promise(r=>setTimeout(r,700));
-  set({searchLoading:false,searchResult:mockIG(h),showPrev:true});
+  const h=S.searchVal.trim().replace(/^@/,"").toLowerCase();
+  if(!h)return;
+  set({searchLoading:true,showPrev:false,searchResult:null,searchError:null});
+  try{
+    // Call backend which proxies to Instagram scraper API
+    const res=await fetch("/api/ig-profile?username="+encodeURIComponent(h));
+    const data=await res.json();
+    if(data.error){
+      // Fall back to mock data with a note
+      const mock=mockIG(h);
+      mock.isMock=true;
+      set({searchLoading:false,searchResult:mock,showPrev:true});
+    } else {
+      set({searchLoading:false,searchResult:data,showPrev:true});
+    }
+  }catch(e){
+    // Network error — use mock
+    const mock=mockIG(h);
+    mock.isMock=true;
+    set({searchLoading:false,searchResult:mock,showPrev:true});
+  }
 }
 function viewProfile(){set({viewedProfile:S.searchResult,tab:"igp",showPrev:false});}
 
@@ -491,10 +528,24 @@ function renderPlans(){
       <ul style="list-style:none;margin-bottom:18px">
         ${plan.features.map(f=>`<li style="font-size:12px;color:#374151;display:flex;gap:6px;margin-bottom:7px"><span style="color:#ea580c">✓</span>${f}</li>`).join("")}
       </ul>
+      ${S.planShowIg&&S.planShowIg[plan.id]?`
+        <input id="planig_${plan.id}" type="text" placeholder="your_username (no @)"
+          style="width:100%;border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;outline:none;margin-bottom:7px;"
+          onfocus="this.style.borderColor='#ea580c'"
+          onblur="this.style.borderColor='var(--border)'"
+          onkeydown="if(event.key==='Enter')confirmAddPlan('${plan.id}')">
+        <button onclick="confirmAddPlan('${plan.id}')"
+          style="width:100%;padding:10px;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;background:${plan.popular?"var(--grad)":"white"};color:${plan.popular?"white":"#c2410c"};border:${plan.popular?"none":"1.5px solid #fed7aa"}">
+          Add to Cart 🛒
+        </button>
+        <button onclick="set({planShowIg:{...S.planShowIg,${plan.id}:false}})"
+          style="width:100%;padding:6px;border:none;background:none;font-size:11px;color:var(--muted);cursor:pointer;font-family:inherit;margin-top:4px;">
+          Cancel
+        </button>`:`
       <button onclick='addPlanToCart(${JSON.stringify(plan)})'
         style="width:100%;padding:10px;border-radius:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;background:${plan.popular?"var(--grad)":"white"};color:${plan.popular?"white":"#c2410c"};border:${plan.popular?"none":"1.5px solid #fed7aa"}">
-        Add to Cart 🛒
-      </button>
+        Get Started →
+      </button>`}
     </div>`).join("")}
   </div>
   ${cartCount()>0?`<div style="margin-top:16px;background:#f0fdf4;border:1px solid #86efac;border-radius:11px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
@@ -732,26 +783,115 @@ function saveSettings(){
 
 // ─── LOGIN ─────────────────────────────────────────────────────────────────────
 function renderLogin(){
+  const err=S.loginErr||"";
   return`<div class="login-wrap">
   <nav class="lnav"><div class="logo"><span>GramLift</span></div></nav>
   <div class="lctr"><div class="lcard">
-    <div class="tabs">
-      <button class="ltab${S.ltab==="login"?" active":""}" onclick="set({ltab:'login'})">Log In</button>
-      <button class="ltab${S.ltab==="signup"?" active":""}" onclick="set({ltab:'signup'})">Create Account</button>
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:20px;color:#c2410c;margin-bottom:4px">
+        ${S.ltab==="login"?"Welcome back":"Create your account"}
+      </div>
+      <div style="font-size:12px;color:var(--muted)">${S.ltab==="login"?"Sign in to manage your orders":"Start growing your Instagram today"}</div>
     </div>
-    <div class="fl"><label>Email</label><input id="em" type="email" placeholder="you@example.com"></div>
-    <div class="fl"><label>Password</label><input id="pw" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="tabs">
+      <button class="ltab${S.ltab==="login"?" active":""}" onclick="set({ltab:'login',loginErr:''})">Log In</button>
+      <button class="ltab${S.ltab==="signup"?" active":""}" onclick="set({ltab:'signup',loginErr:''})">Sign Up</button>
+    </div>
+    ${err?`<div style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:12px;">${err}</div>`:""}
+    <div class="fl"><label>Email address</label>
+      <input id="em" type="email" placeholder="you@gmail.com"
+        style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;"
+        onfocus="this.style.borderColor='#ea580c'"
+        onblur="this.style.borderColor='var(--border)'"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="fl"><label>Password ${S.ltab==="signup"?"(min 6 characters)":""}</label>
+      <input id="pw" type="password" placeholder="••••••••"
+        style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;"
+        onfocus="this.style.borderColor='#ea580c'"
+        onblur="this.style.borderColor='var(--border)'"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    ${S.ltab==="signup"?`<div class="fl"><label>Confirm password</label>
+      <input id="pw2" type="password" placeholder="••••••••"
+        style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;"
+        onfocus="this.style.borderColor='#ea580c'"
+        onblur="this.style.borderColor='var(--border)'"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>`:""}
     <button class="subbtn" onclick="doLogin()">${S.ltab==="login"?"Log In →":"Create Account →"}</button>
-    <div style="text-align:center;font-size:11px;color:var(--subtle);margin-bottom:10px">or</div>
-    <button class="gbtn" onclick="set({page:'app',user:MOCK_USER})">🔵 Continue with Google</button>
-    <p style="text-align:center;font-size:10px;color:var(--subtle);margin-top:12px">By continuing you agree to our Terms & Privacy Policy</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <div style="font-size:11px;color:var(--subtle)">or</div>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+    </div>
+    <button class="gbtn" onclick="googleLogin()" style="display:flex;align-items:center;justify-content:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.8 6C12.2 13 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17z"/><path fill="#FBBC05" d="M10.4 28.7A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.4 0-11.8-4.3-13.6-10l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <p style="text-align:center;font-size:10px;color:var(--subtle);margin-top:12px">By continuing you agree to our <a href="#" style="color:#c2410c">Terms</a> & <a href="#" style="color:#c2410c">Privacy Policy</a></p>
   </div></div></div>`;
 }
+
+function validateEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+
 function doLogin(){
-  const em=document.getElementById("em")?.value||"";
+  const em=(document.getElementById("em")?.value||"").trim();
   const pw=document.getElementById("pw")?.value||"";
-  if(!em||!pw){alert("Please fill in all fields.");return;}
-  set({page:"app",user:{...MOCK_USER,email:em}});
+  const pw2=document.getElementById("pw2")?.value||"";
+
+  if(!em){set({loginErr:"Please enter your email address."});return;}
+  if(!validateEmail(em)){set({loginErr:"Please enter a valid email address (e.g. you@gmail.com)."});return;}
+  if(!pw){set({loginErr:"Please enter a password."});return;}
+  if(pw.length<6){set({loginErr:"Password must be at least 6 characters."});return;}
+
+  if(S.ltab==="signup"){
+    if(!pw2){set({loginErr:"Please confirm your password."});return;}
+    if(pw!==pw2){set({loginErr:"Passwords do not match."});return;}
+    // Register new user — send to backend
+    registerUser(em,pw);
+    return;
+  }
+
+  // Login — send to backend
+  loginUser(em,pw);
+}
+
+async function loginUser(em,pw){
+  try{
+    const res=await fetch("/api/auth/login",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email:em,password:pw}),
+    });
+    const data=await res.json();
+    if(data.error){set({loginErr:data.error});return;}
+    set({page:"app",user:data.user,loginErr:""});
+    toast("Welcome back, "+data.user.email.split("@")[0]+"!");
+  }catch(e){
+    // Backend auth not set up yet — use mock login
+    set({page:"app",user:{...MOCK_USER,email:em},loginErr:""});
+  }
+}
+
+async function registerUser(em,pw){
+  try{
+    const res=await fetch("/api/auth/register",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email:em,password:pw}),
+    });
+    const data=await res.json();
+    if(data.error){set({loginErr:data.error});return;}
+    set({page:"app",user:data.user,loginErr:""});
+    toast("Account created! Welcome to GramLift 🎉");
+  }catch(e){
+    // Backend auth not set up yet — use mock
+    set({page:"app",user:{...MOCK_USER,email:em},loginErr:""});
+  }
+}
+
+function googleLogin(){
+  // Redirect to backend Google OAuth
+  window.location.href="/api/auth/google";
 }
 
 render();

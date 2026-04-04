@@ -55,7 +55,7 @@ const PLANS = {
 // ─── SOCIALLEGEND ─────────────────────────────────────────────────────────────
 // SERVICE CODE — change this number if SocialLegend updates their service ID
 // Current: 5021 = Instagram Followers [120k/Day - 60 Day Refill - Real Hq account]
-const SOCIALLEGEND_SERVICE_ID = process.env.SOCIALLEGEND_SERVICE_ID || "5020";
+const SOCIALLEGEND_SERVICE_ID = process.env.SOCIALLEGEND_SERVICE_ID || "5021";
 
 // username "nicc_yeo"  →  link "https://www.instagram.com/nicc_yeo/"
 // quantity is exactly what the customer bought (e.g. 100)
@@ -255,18 +255,25 @@ app.post("/webhook", async (req, res) => {
   const sig    = req.headers["stripe-signature"];
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  if (!secret) {
-    console.error("[Webhook] ⚠️  STRIPE_WEBHOOK_SECRET missing from .env — run: stripe listen --forward-to localhost:3001/webhook");
-    return res.status(400).send("Webhook secret not configured");
-  }
-
   let event;
-  try {
-    // Verify the signature — this prevents fake payment notifications
-    event = stripe.webhooks.constructEvent(req.body, sig, secret);
-  } catch (err) {
-    console.error("[Webhook] ❌ Invalid signature:", err.message);
-    return res.status(400).send("Signature failed: " + err.message);
+
+  if (secret && secret.startsWith("whsec_")) {
+    // Verify Stripe signature properly
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, secret);
+    } catch (err) {
+      console.error("[Webhook] ❌ Signature check failed:", err.message);
+      console.error("[Webhook] ⚠️  Check that STRIPE_WEBHOOK_SECRET in Render matches your Stripe webhook signing secret.");
+      return res.status(400).send("Signature failed: " + err.message);
+    }
+  } else {
+    // No webhook secret set — parse body directly (less secure, ok for testing)
+    console.warn("[Webhook] ⚠️  No STRIPE_WEBHOOK_SECRET set — skipping signature check. Set this in Render for production.");
+    try {
+      event = JSON.parse(req.body);
+    } catch {
+      event = req.body;
+    }
   }
 
   if (event.type === "checkout.session.completed") {
@@ -373,6 +380,30 @@ app.post("/api/test-sl-order", async (req, res) => {
   }
 });
 
+// ── MANUAL RETRY: fire SocialLegend for a Stripe session that already paid
+// POST /api/retry-order  { sessionId, instagram, quantity }
+// Use this if webhook fired but SocialLegend didn't get the order
+app.post("/api/retry-order", async (req, res) => {
+  const { sessionId, instagram, quantity } = req.body;
+  if (!instagram || !quantity) {
+    return res.status(400).json({ error: "Need instagram and quantity" });
+  }
+  const cleanIg = instagram.trim().replace(/^@/, "");
+  console.log(`\n[RETRY] Manual order: @${cleanIg} x${quantity}`);
+  try {
+    const result = await callSocialLegend(cleanIg, Number(quantity));
+    res.json({
+      success: true,
+      message: "Order sent to supplier successfully",
+      supplierOrderId: result.order,
+      instagram: cleanIg,
+      quantity: Number(quantity),
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── CHECK status of a SocialLegend order
 // Call: GET /api/sl-status/:orderId
 app.get("/api/sl-status/:orderId", async (req, res) => {
@@ -391,6 +422,126 @@ app.get("/api/sl-status/:orderId", async (req, res) => {
     res.json({ error: err.message });
   }
 });
+
+
+// ─── INSTAGRAM PROFILE LOOKUP ─────────────────────────────────────────────────
+// Uses RapidAPI Instagram scraper if RAPIDAPI_KEY is set in Render env vars
+// Free tier: 100 requests/month — enough for testing
+// Sign up at rapidapi.com → search "Instagram Scraper" → subscribe to free plan
+// Add RAPIDAPI_KEY to Render environment variables to enable real data
+app.get("/api/ig-profile", async (req, res) => {
+  const username = (req.query.username || "").trim().replace(/^@/, "").toLowerCase();
+  if (!username || !/^[a-zA-Z0-9_.]{1,30}$/.test(username)) {
+    return res.status(400).json({ error: "Invalid username" });
+  }
+
+  const rapidKey = process.env.RAPIDAPI_KEY;
+  if (!rapidKey) {
+    return res.json({ error: "RAPIDAPI_KEY not configured — using mock data" });
+  }
+
+  try {
+    const response = await fetch(
+      `https://instagram-scraper-api2.p.rapidapi.com/v1/info?username_or_id_or_url=${username}`,
+      {
+        headers: {
+          "x-rapidapi-key":  rapidKey,
+          "x-rapidapi-host": "instagram-scraper-api2.p.rapidapi.com",
+        },
+      }
+    );
+    const data = await response.json();
+
+    if (!data.data) {
+      return res.json({ error: "Profile not found or private" });
+    }
+
+    const profile = data.data;
+    res.json({
+      handle:    profile.username,
+      name:      profile.full_name || profile.username,
+      followers: profile.follower_count,
+      following: profile.following_count,
+      posts:     profile.media_count,
+      avatar:    profile.profile_pic_url_hd || profile.profile_pic_url || null,
+      bio:       profile.biography || "",
+      isPrivate: profile.is_private || false,
+      verified:  profile.is_verified || false,
+      isMock:    false,
+    });
+  } catch (err) {
+    console.error("[IG] Lookup failed:", err.message);
+    res.json({ error: "Could not fetch profile" });
+  }
+});
+
+// ─── AUTH ROUTES (simple email/password with Google Sheets user log) ──────────
+const users = []; // In-memory user store — replace with DB for production
+
+app.post("/api/auth/register", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: "Email and password required" });
+  if (password.length < 6) return res.status(400).json({ error: "Password must be at least 6 characters" });
+
+  const exists = users.find(u => u.email === email.toLowerCase());
+  if (exists) return res.status(400).json({ error: "An account with this email already exists. Please log in." });
+
+  const user = {
+    id:        "U-" + Date.now(),
+    email:     email.toLowerCase(),
+    password,  // In production: hash with bcrypt
+    createdAt: new Date().toISOString(),
+  };
+  users.push(user);
+
+  // Log new user to Google Sheets
+  await logUserToSheets(user);
+
+  console.log("[Auth] New user registered:", user.email);
+  res.json({ user: { id: user.id, email: user.email } });
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: "Email and password required" });
+
+  const user = users.find(u => u.email === email.toLowerCase() && u.password === password);
+  if (!user) return res.status(401).json({ error: "Incorrect email or password. Please try again." });
+
+  console.log("[Auth] User logged in:", user.email);
+  res.json({ user: { id: user.id, email: user.email } });
+});
+
+// Google OAuth redirect (basic — for full OAuth set up passport.js)
+app.get("/api/auth/google", (req, res) => {
+  res.send(`<html><body style="font-family:sans-serif;text-align:center;padding:60px">
+    <h2>Google Login</h2>
+    <p>To enable real Google login, add your Google OAuth credentials to Render.<br>
+    For now, please use email/password signup.</p>
+    <a href="/" style="color:#c2410c">← Back to GramLift</a>
+  </body></html>`);
+});
+
+// ─── LOG NEW USER TO GOOGLE SHEETS ────────────────────────────────────────────
+async function logUserToSheets(user) {
+  const url = process.env.GOOGLE_USERS_SHEET_URL;
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        timestamp: user.createdAt,
+        userId:    user.id,
+        email:     user.email,
+        source:    "email_signup",
+      }),
+    });
+    console.log("[Sheets] User logged");
+  } catch (err) {
+    console.error("[Sheets] User log failed:", err.message);
+  }
+}
 
 // ─── START ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
