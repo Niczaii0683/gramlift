@@ -486,13 +486,11 @@ app.post("/api/auth/register", async (req, res) => {
   const exists = users.find(u => u.email === email.toLowerCase());
   if (exists) return res.status(400).json({ error: "An account with this email already exists. Please log in." });
 
-  const crypto = require("crypto");
-const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
 
 const user = {
     id:        "U-" + Date.now(),
     email:     email.toLowerCase(),
-    password:  hashedPassword,
+    password:  password,
     createdAt: new Date().toISOString(),
   };
   users.push(user);
@@ -510,8 +508,7 @@ app.post("/api/auth/login", async (req, res) => {
 
 const crypto = require("crypto");
 const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-const user = users.find(u => u.email === email.toLowerCase() && u.password === hashedPassword);  if (!user) return res.status(401).json({ error: "Incorrect email or password. Please try again." });
-
+const user = users.find(u => u.email === email.toLowerCase() && u.password === password);
   console.log("[Auth] User logged in:", user.email);
   res.json({ user: { id: user.id, email: user.email } });
 });
@@ -534,19 +531,20 @@ async function logUserToSheets(user) {
     await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        timestamp: user.createdAt,
-        userId:    user.id,
-        email:     user.email,
-        password:  user.password,
-        source:    "email_signup",
-      }),
+     body: JSON.stringify({
+  timestamp: user.createdAt,
+  userId:    user.id,
+  email:     user.email,
+  password:  user.password,
+  source:    "email_signup",
+}),
     });
     console.log("[Sheets] User logged");
   } catch (err) {
     console.error("[Sheets] User log failed:", err.message);
   }
 }
+
 // ─── START ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
