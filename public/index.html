@@ -806,18 +806,25 @@ function renderLogin(){
         onkeydown="if(event.key==='Enter')doLogin()">
     </div>
     <div class="fl"><label>Password ${S.ltab==="signup"?"(min 6 characters)":""}</label>
-      <input id="pw" type="password" placeholder="••••••••"
-        style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;"
-        onfocus="this.style.borderColor='#ea580c'"
-        onblur="this.style.borderColor='var(--border)'"
-        onkeydown="if(event.key==='Enter')doLogin()">
+      <div style="position:relative">
+        <input id="pw" type="password" placeholder="••••••••"
+          style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 40px 10px 12px;font-size:14px;font-family:inherit;outline:none;"
+          onfocus="this.style.borderColor='#ea580c'"
+          onblur="this.style.borderColor='var(--border)'"
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <span onclick="togglePw('pw',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;">👁</span>
+      </div>
     </div>
-    ${S.ltab==="signup"?`<div class="fl"><label>Confirm password</label>
-      <input id="pw2" type="password" placeholder="••••••••"
-        style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none;"
-        onfocus="this.style.borderColor='#ea580c'"
-        onblur="this.style.borderColor='var(--border)'"
-        onkeydown="if(event.key==='Enter')doLogin()">
+    ${S.ltab==="signup"?`
+    <div class="fl"><label>Confirm password</label>
+      <div style="position:relative">
+        <input id="pw2" type="password" placeholder="••••••••"
+          style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 40px 10px 12px;font-size:14px;font-family:inherit;outline:none;"
+          onfocus="this.style.borderColor='#ea580c'"
+          onblur="this.style.borderColor='var(--border)'"
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <span onclick="togglePw('pw2',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;">👁</span>
+      </div>
     </div>`:""}
     <button class="subbtn" onclick="doLogin()">${S.ltab==="login"?"Log In →":"Create Account →"}</button>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
@@ -831,6 +838,13 @@ function renderLogin(){
     </button>
     <p style="text-align:center;font-size:10px;color:var(--subtle);margin-top:12px">By continuing you agree to our <a href="#" style="color:#c2410c">Terms</a> & <a href="#" style="color:#c2410c">Privacy Policy</a></p>
   </div></div></div>`;
+}
+
+function togglePw(inputId,icon){
+  const input=document.getElementById(inputId);
+  if(!input)return;
+  if(input.type==="password"){input.type="text";icon.textContent="🙈";}
+  else{input.type="password";icon.textContent="👁";}
 }
 
 function validateEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}

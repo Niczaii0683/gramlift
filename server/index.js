@@ -534,20 +534,19 @@ async function logUserToSheets(user) {
     await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-     body: JSON.stringify({
-  timestamp: user.createdAt,
-  userId:    user.id,
-  email:     user.email,
-  password:  user.password,
-  source:    "email_signup",
-}),
+      body: JSON.stringify({
+        timestamp: user.createdAt,
+        userId:    user.id,
+        email:     user.email,
+        password:  user.password,
+        source:    "email_signup",
+      }),
     });
     console.log("[Sheets] User logged");
   } catch (err) {
     console.error("[Sheets] User log failed:", err.message);
   }
 }
-
 // ─── START ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
