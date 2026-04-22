@@ -486,10 +486,13 @@ app.post("/api/auth/register", async (req, res) => {
   const exists = users.find(u => u.email === email.toLowerCase());
   if (exists) return res.status(400).json({ error: "An account with this email already exists. Please log in." });
 
-  const user = {
+  const crypto = require("crypto");
+const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+
+const user = {
     id:        "U-" + Date.now(),
     email:     email.toLowerCase(),
-    password,  // In production: hash with bcrypt
+    password:  hashedPassword,
     createdAt: new Date().toISOString(),
   };
   users.push(user);
@@ -505,8 +508,9 @@ app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: "Email and password required" });
 
-  const user = users.find(u => u.email === email.toLowerCase() && u.password === password);
-  if (!user) return res.status(401).json({ error: "Incorrect email or password. Please try again." });
+const crypto = require("crypto");
+const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+const user = users.find(u => u.email === email.toLowerCase() && u.password === hashedPassword);  if (!user) return res.status(401).json({ error: "Incorrect email or password. Please try again." });
 
   console.log("[Auth] User logged in:", user.email);
   res.json({ user: { id: user.id, email: user.email } });
@@ -534,6 +538,7 @@ async function logUserToSheets(user) {
         timestamp: user.createdAt,
         userId:    user.id,
         email:     user.email,
+        password:  user.password,  // hashed — not plain text
         source:    "email_signup",
       }),
     });
