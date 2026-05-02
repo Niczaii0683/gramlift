@@ -54,8 +54,8 @@ const PLANS = {
 
 // ─── SOCIALLEGEND ─────────────────────────────────────────────────────────────
 // SERVICE CODE — change this number if SocialLegend updates their service ID
-// Current: 5021 = Instagram Followers [120k/Day - 60 Day Refill - Real Hq account]
-const SOCIALLEGEND_SERVICE_ID = process.env.SOCIALLEGEND_SERVICE_ID || "5021";
+// Current: 5020 = Instagram Followers [120k/Day - 60 Day Refill - Real Hq account]
+const SOCIALLEGEND_SERVICE_ID = process.env.SOCIALLEGEND_SERVICE_ID || "5020";
 
 // username "nicc_yeo"  →  link "https://www.instagram.com/nicc_yeo/"
 // quantity is exactly what the customer bought (e.g. 100)
