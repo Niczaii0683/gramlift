@@ -170,6 +170,25 @@ section{padding:88px 0}
 .rv .who span{font-size:13px;color:var(--ink-3)}
 .rv video{width:100%;border-radius:var(--r);aspect-ratio:9/16;object-fit:cover;background:#000;max-height:360px}
 
+/* rotating photo strip */
+.rot-wrap{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start}
+.rot{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--paper-2);aspect-ratio:1}
+.rot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
+.rot img.on{opacity:1}
+.rot .cap{position:absolute;left:0;right:0;bottom:0;padding:26px 18px 14px;background:linear-gradient(to top,rgba(28,25,23,.82),transparent);color:#fff;font-size:14px;font-weight:500}
+.rot .empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink-3);font-size:14px;text-align:center;padding:24px}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:14px}
+.dots button{width:7px;height:7px;border-radius:50%;border:none;padding:0;background:var(--line);cursor:pointer;transition:background .2s,width .2s}
+.dots button.on{background:var(--accent);width:20px;border-radius:4px}
+
+/* support card */
+.support{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;margin-top:22px}
+.support .ph{aspect-ratio:4/3;background:var(--paper-2);object-fit:cover;width:100%;display:block}
+.support .ph-fb{aspect-ratio:4/3;display:grid;place-items:center;background:var(--ink);color:#fff;font-family:'Sora',sans-serif;font-size:34px;font-weight:700}
+.support .txt{padding:16px 18px}
+.support b{display:block;font-size:15px}
+.support span{font-size:13px;color:var(--ink-3)}
+
 /* faq */
 .faq{max-width:760px}
 .q{border-bottom:1px solid var(--line)}
@@ -221,7 +240,9 @@ footer{padding:48px 0 40px;border-top:1px solid var(--line);font-size:14px;color
      Drop your files into  public/media/  and point to them below.
      ═══════════════════════════════════════════════════════════════════ -->
 <script>
-// PACKAGES shown on this page. Must match the prices in app.html and server/index.js.
+// ─────────────────────────────────────────────────────────────────────
+// PACKAGES  ·  must match the same prices in app.html and server/index.js
+// ─────────────────────────────────────────────────────────────────────
 const PACKAGES = [
   {qty:100,    price:8.99,    was:null,    pop:false},
   {qty:250,    price:20.40,   was:21.47,   pop:false},
@@ -235,23 +256,50 @@ const PACKAGES = [
   {qty:100000, price:3374.99, was:4499.99, pop:false},
 ];
 
-// BEFORE / AFTER RESULTS.  sample:true shows an "Example" tag on the card.
-// When you have a real one: set sample:false, put the screenshot in public/media/, fill the numbers.
+// ─────────────────────────────────────────────────────────────────────
+// ROTATING PHOTOS  ·  the strip beside the reviews, changes every 2.4s
+//
+// Drop your files into  public/media/  using these exact names:
+//     rotate-1.jpg  rotate-2.jpg  rotate-3.jpg  rotate-4.jpg  rotate-5.jpg
+// Any name missing from the folder is skipped automatically.
+// Square images work best. Roughly 800x800 pixels.
+// ─────────────────────────────────────────────────────────────────────
+const ROTATING = [
+  {file:"media/rotate-1.jpg", caption:"1,000 followers delivered"},
+  {file:"media/rotate-2.jpg", caption:"Before and after, 3 days"},
+  {file:"media/rotate-3.jpg", caption:"5,000 follower order"},
+  {file:"media/rotate-4.jpg", caption:"Refill covered at day 21"},
+  {file:"media/rotate-5.jpg", caption:"Two accounts, one checkout"},
+];
+const ROTATE_SPEED = 2400;   // milliseconds between photos
+
+// ─────────────────────────────────────────────────────────────────────
+// BEFORE / AFTER RESULTS  ·  three static cards, no movement
+// Photo slots:  media/result-1.jpg   media/result-2.jpg   media/result-3.jpg
+// Leave sample:true until the numbers are from a real order.
+// ─────────────────────────────────────────────────────────────────────
 const RESULTS = [
-  {sample:true,  handle:"@yourhandle",   niche:"Fitness coach, US",      before:2140,  after:3140,  pkg:"1,000 followers", photo:""},
-  {sample:true,  handle:"@yourhandle",   niche:"Small business, UK",      before:880,   after:1380,  pkg:"500 followers",   photo:""},
-  {sample:true,  handle:"@yourhandle",   niche:"Travel creator, DE",      before:5300,  after:10300, pkg:"5,000 followers", photo:""},
+  {sample:true, handle:"@yourhandle", niche:"Fitness coach, US",  before:2140, after:3140,  pkg:"1,000 followers", photo:"media/result-1.jpg"},
+  {sample:true, handle:"@yourhandle", niche:"Small business, UK", before:880,  after:1380,  pkg:"500 followers",   photo:"media/result-2.jpg"},
+  {sample:true, handle:"@yourhandle", niche:"Travel creator, DE", before:5300, after:10300, pkg:"5,000 followers", photo:"media/result-3.jpg"},
 ];
 
-// REVIEWS.  Use EITHER photo (jpg/png) OR video (mp4). Leave the other one as "".
-// sample:true shows an "Example" tag. Set to false once it is a real customer.
+// ─────────────────────────────────────────────────────────────────────
+// REVIEWS  ·  three static cards
+// Photo slots:  media/review-1.jpg   media/review-2.jpg   media/review-3.jpg
+// No photo in the folder yet? The card shows a lettered circle instead.
+// ─────────────────────────────────────────────────────────────────────
 const REVIEWS = [
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Ordered 1K on Tuesday night, everything landed by Wednesday afternoon. Exactly the count I paid for.", photo:"", video:""},
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"", video:""},
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"A few dropped after two weeks and support refilled them the same day. That's the guarantee working.", photo:"", video:""},
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Ordered 1K on Tuesday night, everything landed by Wednesday afternoon. Exactly the count I paid for.", photo:"media/review-1.jpg"},
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"media/review-2.jpg"},
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"A few dropped after two weeks and support refilled them the same day. That's the guarantee working.", photo:"media/review-3.jpg"},
 ];
 
-// Contact email shown in the footer and FAQ.
+// ─────────────────────────────────────────────────────────────────────
+// SUPPORT CARD  ·  photo slot:  media/founder.jpg
+// ─────────────────────────────────────────────────────────────────────
+const SUPPORT_CARD = {show:true, name:"Nicholas", role:"Founder and support", photo:"media/founder.jpg"};
+
 const SUPPORT_EMAIL = "support@gramlift.com";
 </script>
 
@@ -415,7 +463,14 @@ const SUPPORT_EMAIL = "support@gramlift.com";
     <div class="sec-head">
       <h2>What customers say</h2>
     </div>
-    <div class="rv-grid" id="rvGrid"></div>
+    <div class="rot-wrap">
+      <div class="rv-grid" id="rvGrid" style="grid-template-columns:1fr"></div>
+      <div>
+        <div class="rot" id="rot"><div class="empty">Add photos to public/media/ to fill this space.</div></div>
+        <div class="dots" id="dots"></div>
+        <div id="supportCard"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -511,7 +566,7 @@ const num = n => n.toLocaleString("en-US");
 document.getElementById("resGrid").innerHTML = RESULTS.map(r => `
   <div class="res">
     ${r.sample ? '<span class="sample">Example</span>' : ""}
-    ${r.photo ? `<img class="photo" src="${r.photo}" alt="Profile screenshot for ${r.handle}">` : '<div class="photo"></div>'}
+    ${r.photo ? `<img class="photo" src="${r.photo}" alt="Profile screenshot for ${r.handle}" onerror="this.outerHTML=\'<div class=&quot;photo&quot;></div>\'">` : '<div class="photo"></div>'}
     <div class="body">
       <div class="handle">${r.handle}</div>
       <div class="niche">${r.niche}</div>
@@ -528,11 +583,10 @@ document.getElementById("resGrid").innerHTML = RESULTS.map(r => `
 document.getElementById("rvGrid").innerHTML = REVIEWS.map(r => `
   <div class="rv">
     ${r.sample ? '<span class="sample">Example</span>' : ""}
-    ${r.video ? `<video src="${r.video}" controls playsinline preload="metadata"></video>` : ""}
     <div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
     <blockquote>"${r.quote}"</blockquote>
     <div class="who">
-      ${r.photo ? `<img src="${r.photo}" alt="">` : `<div class="init">${r.name.trim()[0] || "?"}</div>`}
+      ${r.photo ? `<img src="${r.photo}" alt="" onerror="this.outerHTML=\'<div class=&quot;init&quot;>${r.name.trim()[0]||"?"}</div>\'">` : `<div class="init">${r.name.trim()[0] || "?"}</div>`}
       <div><b>${r.name}</b><span>${r.handle}</span></div>
     </div>
   </div>`).join("");
@@ -540,6 +594,62 @@ document.getElementById("rvGrid").innerHTML = REVIEWS.map(r => `
 // ─── misc ───────────────────────────────────────────────────────────
 document.getElementById("yr").textContent = new Date().getFullYear();
 ["faqMail","footMail"].forEach(id => { const a = document.getElementById(id); a.href = "mailto:" + SUPPORT_EMAIL; if (id === "faqMail") a.textContent = SUPPORT_EMAIL; });
+
+// ─── rotating photo strip ───────────────────────────────────────────
+// Each file is tested first. Names that are not in /media/ are skipped,
+// so empty slots never show a broken image.
+(function(){
+  const rot = document.getElementById("rot"), dots = document.getElementById("dots");
+  let live = [], i = 0, timer = null;
+
+  Promise.all(ROTATING.map(r => new Promise(res => {
+    const img = new Image();
+    img.onload  = () => res(r);
+    img.onerror = () => res(null);
+    img.src = r.file;
+  }))).then(found => {
+    live = found.filter(Boolean);
+    if (!live.length) return;
+
+    rot.innerHTML = live.map((r,n) =>
+      `<img src="${r.file}" alt="${r.caption}" class="${n===0?"on":""}">`).join("")
+      + `<div class="cap">${live[0].caption}</div>`;
+    dots.innerHTML = live.map((_,n) =>
+      `<button class="${n===0?"on":""}" aria-label="Photo ${n+1}" onclick="window.__goto(${n})"></button>`).join("");
+
+    const show = n => {
+      i = n;
+      rot.querySelectorAll("img").forEach((el,k) => el.classList.toggle("on", k===n));
+      rot.querySelector(".cap").textContent = live[n].caption;
+      dots.querySelectorAll("button").forEach((el,k) => el.classList.toggle("on", k===n));
+    };
+    window.__goto = n => { show(n); restart(); };
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const restart = () => {
+      clearInterval(timer);
+      if (!reduce && live.length > 1) timer = setInterval(() => show((i+1) % live.length), ROTATE_SPEED);
+    };
+    restart();
+    rot.addEventListener("mouseenter", () => clearInterval(timer));
+    rot.addEventListener("mouseleave", restart);
+  });
+})();
+
+// ─── support card ───────────────────────────────────────────────────
+(function(){
+  if (!SUPPORT_CARD.show) return;
+  const el = document.getElementById("supportCard");
+  const initial = SUPPORT_CARD.name.trim()[0] || "G";
+  el.innerHTML = `<div class="support">
+      <div class="ph-fb">${initial}</div>
+      <div class="txt"><b>${SUPPORT_CARD.name}</b><span>${SUPPORT_CARD.role}</span></div>
+    </div>`;
+  const img = new Image();
+  img.onload = () => { el.querySelector(".ph-fb").outerHTML =
+    `<img class="ph" src="${SUPPORT_CARD.photo}" alt="${SUPPORT_CARD.name}">`; };
+  img.src = SUPPORT_CARD.photo;
+})();
 
 // ─── hero follower ticker ───────────────────────────────────────────
 (function(){
