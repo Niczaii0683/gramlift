@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GramLift: Buy Instagram Followers Without a Subscription</title>
+<meta name="description" content="Pick a package, enter a username, pay with card. Instagram followers delivered within 24 hours with a 30-day refill guarantee. No subscription, no password required.">
+<meta property="og:title" content="GramLift: Buy Instagram Followers Without a Subscription">
+<meta property="og:description" content="Exact follower counts, one-time pricing, delivery within 24 hours, 30-day refill guarantee.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gramlift.onrender.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1c1917;
+  --ink-2:#44403c;
+  --ink-3:#78716c;
+  --line:#e7e5e4;
+  --paper:#ffffff;
+  --paper-2:#faf9f7;
+  --accent:#e8560e;
+  --accent-ink:#b8420a;
+  --accent-soft:#fff1e9;
+  --grow:#15803d;
+  --grow-soft:#ecfdf3;
+  --grad:linear-gradient(135deg,#dc2626,#ea580c,#f59e0b);
+  --r-sm:8px; --r:14px; --r-lg:22px;
+  --max:1120px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--paper);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Sora',sans-serif;letter-spacing:-.02em;line-height:1.15}
+h1{font-size:clamp(38px,5.2vw,60px);font-weight:800}
+h2{font-size:clamp(28px,3.4vw,38px);font-weight:700}
+h3{font-size:18px;font-weight:700}
+p{color:var(--ink-2)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+section{padding:88px 0}
+.lede{font-size:18px;max-width:560px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:12px;font-weight:600;font-size:15px;border:1.5px solid transparent;cursor:pointer;font-family:inherit;transition:transform .12s ease,background .12s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-ink)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{background:var(--paper-2)}
+.btn-lg{padding:17px 28px;font-size:16px}
+
+/* ─── NAV ────────────────────────────────────────────────────────────── */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{height:68px;display:flex;align-items:center;gap:32px}
+.brand{font-family:'Sora',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.03em;display:flex;align-items:center;gap:9px}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--grad);position:relative}
+.brand-mark::after{content:"";position:absolute;left:9px;bottom:8px;width:12px;height:12px;border-right:3px solid #fff;border-top:3px solid #fff;transform:rotate(-45deg) translate(2px,2px)}
+.nav-links{display:flex;gap:26px;margin-left:8px}
+.nav-links a{font-size:15px;font-weight:500;color:var(--ink-2)}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
+.nav-cta .login{font-weight:500;font-size:15px;color:var(--ink-2);padding:10px 12px}
+.menu-btn{display:none;margin-left:auto;background:none;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-family:inherit;font-weight:600;cursor:pointer}
+
+/* ─── HERO ───────────────────────────────────────────────────────────── */
+.hero{padding:72px 0 80px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{margin:18px 0 20px}
+.hero .lede{margin-bottom:30px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.chips{display:flex;gap:10px 18px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--ink-2);font-weight:500}
+.chip svg{width:16px;height:16px;color:var(--grow)}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);padding:6px 12px;border-radius:999px}
+
+/* the memorable thing: a profile card that grows */
+.stage{position:relative;padding:20px 0 20px 20px}
+.ig-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px 28px 28px;box-shadow:0 30px 60px -30px rgba(28,25,23,.28),0 2px 6px rgba(28,25,23,.05);max-width:420px;margin-left:auto;position:relative}
+.ig-top{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+.ig-avatar{width:76px;height:76px;border-radius:50%;padding:3px;background:var(--grad);flex-shrink:0}
+.ig-avatar span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#fff;font-family:'Sora',sans-serif;font-weight:800;font-size:26px;color:var(--ink)}
+.ig-stats{display:flex;gap:26px}
+.ig-stat b{display:block;font-family:'Sora',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.ig-stat span{font-size:13px;color:var(--ink-3)}
+.ig-stat.hot b{color:var(--grow);font-variant-numeric:tabular-nums}
+.ig-name{font-weight:600;font-size:15px}
+.ig-bio{font-size:14px;color:var(--ink-2);margin-top:3px}
+.ig-follow{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ig-follow div{border-radius:var(--r-sm);padding:9px;text-align:center;font-size:14px;font-weight:600;border:1px solid var(--line)}
+.ig-follow div:first-child{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ig-grid{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.ig-grid i{display:block;aspect-ratio:1;border-radius:4px;background:linear-gradient(135deg,#f5f5f4,#e7e5e4)}
+.ig-grid i:nth-child(2){background:linear-gradient(135deg,#fde68a,#fdba74)}
+.ig-grid i:nth-child(4){background:linear-gradient(135deg,#fecaca,#fca5a5)}
+.ig-grid i:nth-child(6){background:linear-gradient(135deg,#d9f99d,#86efac)}
+.pill{position:absolute;right:-8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px -10px rgba(28,25,23,.3);opacity:0;transform:translateY(8px)}
+.pill em{font-style:normal;color:var(--grow)}
+.pill .dot{width:22px;height:22px;border-radius:50%;background:var(--grad)}
+.pill.show{animation:pillIn 5.6s ease forwards}
+@keyframes pillIn{0%{opacity:0;transform:translateY(10px)}8%{opacity:1;transform:translateY(0)}80%{opacity:1;transform:translateY(-6px)}100%{opacity:0;transform:translateY(-14px)}}
+.ticker-note{margin-top:14px;font-size:13px;color:var(--ink-3);text-align:right}
+@media (prefers-reduced-motion:reduce){.pill.show{animation:none;opacity:1;transform:none}html{scroll-behavior:auto}}
+
+/* ─── SECTIONS ───────────────────────────────────────────────────────── */
+.sec-head{max-width:640px;margin-bottom:44px}
+.sec-head p{margin-top:12px;font-size:17px}
+.alt{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.col{border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;background:#fff}
+.col.us{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.col h3{margin-bottom:6px}
+.col .sub{font-size:14px;color:var(--ink-3);margin-bottom:18px}
+.col ul{list-style:none;display:grid;gap:11px}
+.col li{display:flex;gap:10px;font-size:15px;align-items:flex-start}
+.col li svg{width:18px;height:18px;flex-shrink:0;margin-top:2px}
+.col.them li svg{color:var(--ink-3)}
+.col.us li svg{color:var(--grow)}
+
+/* steps (a real sequence, so numbers are earned) */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:step}
+.step{padding:26px;border:1px solid var(--line);border-radius:var(--r-lg);background:#fff}
+.step::before{counter-increment:step;content:counter(step);display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--ink);color:#fff;font-family:'Sora',sans-serif;font-weight:700;margin-bottom:16px}
+.step h3{margin-bottom:8px}
+.step p{font-size:15px}
+
+/* packages */
+.pk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.pk{border:1px solid var(--line);border-radius:var(--r);padding:20px 16px 18px;background:#fff;text-align:center;position:relative}
+.pk.pop{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.pk .tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pk .qty{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.pk .lbl{font-size:13px;color:var(--ink-3);margin-bottom:10px}
+.pk .price{font-size:20px;font-weight:700;color:var(--accent-ink)}
+.pk .was{font-size:12px;color:var(--ink-3);text-decoration:line-through;min-height:16px}
+.pk a{display:block;margin-top:12px;padding:9px;border-radius:var(--r-sm);font-size:13px;font-weight:600;border:1.5px solid var(--line)}
+.pk a:hover{border-color:var(--ink)}
+.pk.pop a{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pk-note{margin-top:18px;font-size:14px;color:var(--ink-3)}
+
+/* results (before/after) */
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.res{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;position:relative}
+.res .photo{aspect-ratio:4/3;background:linear-gradient(135deg,#f5f5f4,#e7e5e4);object-fit:cover;width:100%}
+.res .body{padding:18px 20px 20px}
+.res .handle{font-weight:600;font-size:15px}
+.res .niche{font-size:13px;color:var(--ink-3);margin-bottom:14px}
+.ba{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.ba b{display:block;font-family:'Sora',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.ba span{font-size:12px;color:var(--ink-3)}
+.ba .after b{color:var(--grow)}
+.ba .arrow{color:var(--ink-3)}
+.res .pkg{margin-top:12px;font-size:13px;color:var(--ink-2);background:var(--paper-2);border-radius:var(--r-sm);padding:7px 10px;display:inline-block}
+.sample{position:absolute;top:12px;left:12px;background:#fff;border:1px solid var(--line);font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;color:var(--ink-3)}
+
+/* reviews */
+.rv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.rv{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:22px;position:relative;display:flex;flex-direction:column;gap:14px}
+.rv .stars{color:#f59e0b;font-size:15px;letter-spacing:2px}
+.rv blockquote{font-size:15px;color:var(--ink);line-height:1.6}
+.rv .who{display:flex;align-items:center;gap:12px;margin-top:auto}
+.rv .who img,.rv .who .init{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.rv .who .init{display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:700;font-family:'Sora',sans-serif}
+.rv .who b{display:block;font-size:14px}
+.rv .who span{font-size:13px;color:var(--ink-3)}
+.rv video{width:100%;border-radius:var(--r);aspect-ratio:9/16;object-fit:cover;background:#000;max-height:360px}
+
+/* faq */
+.faq{max-width:760px}
+.q{border-bottom:1px solid var(--line)}
+.q summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:"+";font-size:22px;color:var(--ink-3);font-weight:400;transition:transform .15s}
+.q[open] summary::after{transform:rotate(45deg)}
+.q p{padding:0 0 20px;max-width:640px}
+
+/* final cta */
+.final{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:56px;display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}
+.final h2{color:#fff}
+.final p{color:#d6d3d1;margin-top:10px}
+.final .btn-primary{justify-self:end}
+
+/* footer */
+footer{padding:48px 0 40px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-3)}
+.foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
+.foot h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px}
+.foot a{display:block;padding:4px 0}
+.foot a:hover{color:var(--ink)}
+.foot-bottom{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* responsive */
+@media (max-width:980px){
+  .hero .wrap{grid-template-columns:1fr;gap:40px}
+  .stage{padding:0}.ig-card{margin:0 auto}
+  .pk-grid{grid-template-columns:repeat(3,1fr)}
+  .res-grid,.rv-grid,.steps{grid-template-columns:1fr 1fr}
+  .final{grid-template-columns:1fr}.final .btn-primary{justify-self:start}
+  .foot{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  section{padding:64px 0}
+  .nav-links,.nav-cta .login{display:none}
+  .menu-btn{display:block}
+  .nav.open .nav-links{display:flex;position:absolute;top:68px;left:0;right:0;background:#fff;flex-direction:column;padding:16px 24px;gap:14px;border-bottom:1px solid var(--line)}
+  .compare,.pk-grid,.res-grid,.rv-grid,.steps{grid-template-columns:1fr}
+  .pk-grid{grid-template-columns:1fr 1fr}
+  .final{padding:32px}
+  .foot{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     EDIT ZONE: everything you will change lives in these three lists.
+     Drop your files into  public/media/  and point to them below.
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+// PACKAGES shown on this page. Must match the prices in app.html and server/index.js.
+const PACKAGES = [
+  {qty:100,    price:8.99,    was:null,    pop:false},
+  {qty:250,    price:20.40,   was:21.47,   pop:false},
+  {qty:500,    price:38.37,   was:40.39,   pop:false},
+  {qty:1000,   price:72.99,   was:74.99,   pop:true},
+  {qty:2000,   price:132.99,  was:139.99,  pop:false},
+  {qty:5000,   price:279.99,  was:299.99,  pop:false},
+  {qty:10000,  price:485.99,  was:539.99,  pop:false},
+  {qty:20000,  price:866.99,  was:1019.99, pop:false},
+  {qty:50000,  price:1919.99, was:2399.99, pop:false},
+  {qty:100000, price:3374.99, was:4499.99, pop:false},
+];
+
+// BEFORE / AFTER RESULTS.  sample:true shows an "Example" tag on the card.
+// When you have a real one: set sample:false, put the screenshot in public/media/, fill the numbers.
+const RESULTS = [
+  {sample:true,  handle:"@yourhandle",   niche:"Fitness coach, US",      before:2140,  after:3140,  pkg:"1,000 followers", photo:""},
+  {sample:true,  handle:"@yourhandle",   niche:"Small business, UK",      before:880,   after:1380,  pkg:"500 followers",   photo:""},
+  {sample:true,  handle:"@yourhandle",   niche:"Travel creator, DE",      before:5300,  after:10300, pkg:"5,000 followers", photo:""},
+];
+
+// REVIEWS.  Use EITHER photo (jpg/png) OR video (mp4). Leave the other one as "".
+// sample:true shows an "Example" tag. Set to false once it is a real customer.
+const REVIEWS = [
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Ordered 1K on Tuesday night, everything landed by Wednesday afternoon. Exactly the count I paid for.", photo:"", video:""},
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"", video:""},
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"A few dropped after two weeks and support refilled them the same day. That's the guarantee working.", photo:"", video:""},
+];
+
+// Contact email shown in the footer and FAQ.
+const SUPPORT_EMAIL = "support@gramlift.com";
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     NAV
+     ═══════════════════════════════════════════════════════════════════ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="brand-mark"></span>GramLift</a>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#results">Results</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="menu-btn" onclick="document.getElementById('nav').classList.toggle('open')">Menu</button>
+    <div class="nav-cta">
+      <a class="login" href="/app.html">Log in</a>
+      <a class="btn btn-primary" href="#pricing">See packages</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="kicker">One-time payment. No subscription.</span>
+      <h1>Buy Instagram followers without signing up for a monthly plan.</h1>
+      <p class="lede">Pick a package, type in a username, pay by card. Delivery starts within 24 hours, and every order is covered by a 30-day refill guarantee.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="#pricing">See packages</a>
+        <a class="btn btn-ghost btn-lg" href="#how">How it works</a>
+      </div>
+      <div class="chips">
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>No password required</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Secure Stripe checkout</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Starts within 24 hours</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>30-day refill</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="ig-card" aria-label="Example Instagram profile gaining followers">
+        <div class="ig-top">
+          <div class="ig-avatar"><span>G</span></div>
+          <div class="ig-stats">
+            <div class="ig-stat"><b>128</b><span>posts</span></div>
+            <div class="ig-stat hot"><b id="tick">2,140</b><span>followers</span></div>
+            <div class="ig-stat"><b>412</b><span>following</span></div>
+          </div>
+        </div>
+        <div class="ig-name">yourhandle</div>
+        <div class="ig-bio">This is what a 1,000 follower order looks like.</div>
+        <div class="ig-follow"><div>Following</div><div>Message</div></div>
+        <div class="ig-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="pill" id="p1" style="top:18px"><span class="dot"></span>New follower <em>+1</em></div>
+        <div class="pill" id="p2" style="top:62px"><span class="dot"></span>New follower <em>+1</em></div>
+        <div class="pill" id="p3" style="top:106px"><span class="dot"></span>New follower <em>+1</em></div>
+      </div>
+      <div class="ticker-note">Illustration of a 1,000 follower package being delivered.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     COMPARE
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Most growth services charge you every month and won't tell you what you'll get.</h2>
+      <p>We took the opposite approach. You choose the number, you pay once, you're done.</p>
+    </div>
+    <div class="compare">
+      <div class="col them">
+        <h3>Typical subscription service</h3>
+        <div class="sub">$40 to $80 a month, billed annually</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Follower count is a rough monthly estimate</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Results take weeks to show up</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Often asks for your Instagram login</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>Keeps billing until you cancel</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>One account per plan</li>
+        </ul>
+      </div>
+      <div class="col us">
+        <h3>GramLift</h3>
+        <div class="sub">From $8.99, one payment</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>You pick the exact number, from 100 to 100,000</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Delivery starts within 24 hours</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Only your username. Never your password</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Pay once. Nothing recurring</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Add several accounts to one cart</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HOW IT WORKS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Three steps. About two minutes.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>Choose a package</h3>
+        <p>Ten sizes from 100 to 100,000 followers. Prices are on the page, nothing is hidden behind a quote.</p>
+      </div>
+      <div class="step">
+        <h3>Enter the username</h3>
+        <p>Just the @handle. The account needs to be public. Add more than one account if you manage several.</p>
+      </div>
+      <div class="step">
+        <h3>Pay by card</h3>
+        <p>Checkout runs on Stripe. We never see your card details. Delivery begins within 24 hours of payment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PRICING
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="pricing" class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Pricing</h2>
+      <p>Every package is a one-time purchase in USD. Larger packages cost less per follower.</p>
+    </div>
+    <div class="pk-grid" id="pkGrid"></div>
+    <p class="pk-note">Need something between two sizes, or more than one account? Log in and use the cart.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     RESULTS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="results">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Results</h2>
+      <p>Screenshots from real orders. We add new ones as customers share them.</p>
+    </div>
+    <div class="res-grid" id="resGrid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     REVIEWS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="alt">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>What customers say</h2>
+    </div>
+    <div class="rv-grid" id="rvGrid"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FAQ
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head"><h2>Questions people ask before ordering</h2></div>
+    <div class="faq">
+      <details class="q"><summary>Do you need my Instagram password?</summary><p>No. We only need the username of a public account. You never share login details with us.</p></details>
+      <details class="q"><summary>How fast is delivery?</summary><p>Delivery starts within 24 hours of payment, usually much sooner. Larger packages are delivered gradually over a few days so the growth looks natural.</p></details>
+      <details class="q"><summary>What does the 30-day refill guarantee cover?</summary><p>If your follower count drops below what you ordered within 30 days, contact support and we top it back up at no charge.</p></details>
+      <details class="q"><summary>Does the account have to be public?</summary><p>Yes. Followers can't be delivered to a private account. You can switch it back to private once the order is complete.</p></details>
+      <details class="q"><summary>Can I order for more than one account?</summary><p>Yes. Log in, add packages for each username to your cart, and pay once at checkout.</p></details>
+      <details class="q"><summary>Is my payment secure?</summary><p>All payments run through Stripe, the same processor used by companies like Shopify and Amazon. GramLift never sees or stores your card details.</p></details>
+      <details class="q"><summary>What if something goes wrong?</summary><p>Email <a href="mailto:" id="faqMail" style="color:var(--accent-ink);font-weight:600"></a> with your order reference and we'll sort it out.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FINAL CTA
+     ═══════════════════════════════════════════════════════════════════ -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="final">
+      <div>
+        <h2>Pick a number. We'll deliver it.</h2>
+        <p>One payment, exact count, covered by a 30-day refill.</p>
+      </div>
+      <a class="btn btn-primary btn-lg" href="#pricing">See packages</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="/" style="font-size:18px;margin-bottom:10px"><span class="brand-mark" style="width:24px;height:24px"></span>GramLift</a>
+        <p style="max-width:300px;font-size:14px">Instagram followers, sold by the package. Delivered within 24 hours, backed by a 30-day refill.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <a href="#pricing">Pricing</a>
+        <a href="#how">How it works</a>
+        <a href="/app.html">Log in</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="mailto:" id="footMail">Email support</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="/terms.html">Terms of service</a>
+        <a href="/privacy.html">Privacy policy</a>
+        <a href="/refund.html">Refund policy</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; <span id="yr"></span> GramLift. All rights reserved.</span>
+      <span>GramLift is not affiliated with Instagram or Meta.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Live chat (free): sign up at tawk.to, copy their snippet, paste it here.
+<script type="text/javascript">
+</script>
+-->
+
+<script>
+// ─── render packages ────────────────────────────────────────────────
+const fmtK = n => n >= 1000 ? (n/1000) + "K" : String(n);
+const money = n => "$" + n.toFixed(2);
+document.getElementById("pkGrid").innerHTML = PACKAGES.map(p => `
+  <div class="pk${p.pop ? " pop" : ""}">
+    ${p.pop ? '<span class="tag">Most popular</span>' : ""}
+    <div class="qty">${fmtK(p.qty)}</div>
+    <div class="lbl">followers</div>
+    <div class="was">${p.was ? money(p.was) : ""}</div>
+    <div class="price">${money(p.price)}</div>
+    <a href="/app.html">Choose</a>
+  </div>`).join("");
+
+// ─── render results ─────────────────────────────────────────────────
+const num = n => n.toLocaleString("en-US");
+document.getElementById("resGrid").innerHTML = RESULTS.map(r => `
+  <div class="res">
+    ${r.sample ? '<span class="sample">Example</span>' : ""}
+    ${r.photo ? `<img class="photo" src="${r.photo}" alt="Profile screenshot for ${r.handle}">` : '<div class="photo"></div>'}
+    <div class="body">
+      <div class="handle">${r.handle}</div>
+      <div class="niche">${r.niche}</div>
+      <div class="ba">
+        <div><b>${num(r.before)}</b><span>before</span></div>
+        <div class="arrow">&rarr;</div>
+        <div class="after"><b>${num(r.after)}</b><span>after</span></div>
+      </div>
+      <div class="pkg">${r.pkg}</div>
+    </div>
+  </div>`).join("");
+
+// ─── render reviews ─────────────────────────────────────────────────
+document.getElementById("rvGrid").innerHTML = REVIEWS.map(r => `
+  <div class="rv">
+    ${r.sample ? '<span class="sample">Example</span>' : ""}
+    ${r.video ? `<video src="${r.video}" controls playsinline preload="metadata"></video>` : ""}
+    <div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
+    <blockquote>"${r.quote}"</blockquote>
+    <div class="who">
+      ${r.photo ? `<img src="${r.photo}" alt="">` : `<div class="init">${r.name.trim()[0] || "?"}</div>`}
+      <div><b>${r.name}</b><span>${r.handle}</span></div>
+    </div>
+  </div>`).join("");
+
+// ─── misc ───────────────────────────────────────────────────────────
+document.getElementById("yr").textContent = new Date().getFullYear();
+["faqMail","footMail"].forEach(id => { const a = document.getElementById(id); a.href = "mailto:" + SUPPORT_EMAIL; if (id === "faqMail") a.textContent = SUPPORT_EMAIL; });
+
+// ─── hero follower ticker ───────────────────────────────────────────
+(function(){
+  const el = document.getElementById("tick");
+  const start = 2140, end = 3140, dur = 4200;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) { el.textContent = num(end); return; }
+  const t0 = performance.now();
+  function frame(t){
+    const k = Math.min(1, (t - t0) / dur);
+    const eased = 1 - Math.pow(1 - k, 3);
+    el.textContent = num(Math.round(start + (end - start) * eased));
+    if (k < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  [["p1",300],["p2",1500],["p3",2700]].forEach(([id,delay]) => setTimeout(() => document.getElementById(id).classList.add("show"), delay));
+})();
+</script>
+</body>
+</html>
