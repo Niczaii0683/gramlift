@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GramLift: Buy Instagram Followers Without a Subscription</title>
-<meta name="description" content="Pick a package, enter a username, pay with card. Instagram followers delivered within 24 hours with a 30-day refill guarantee. No subscription, no password required.">
+<meta name="description" content="Pick a package, enter a username, pay with card. Instagram followers and post boosts delivered within 24 hours. No subscription, no password required.">
 <meta property="og:title" content="GramLift: Buy Instagram Followers Without a Subscription">
-<meta property="og:description" content="Exact follower counts, one-time pricing, delivery within 24 hours, 30-day refill guarantee.">
+<meta property="og:description" content="Exact counts, one-time pricing, delivery within 24 hours.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://gramlift.onrender.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -143,6 +143,21 @@ section{padding:88px 0}
 .pk.pop a{background:var(--accent);color:#fff;border-color:var(--accent)}
 .pk-note{margin-top:18px;font-size:14px;color:var(--ink-3)}
 
+/* post boost */
+.pb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pb{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:24px}
+.pb h4{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px}
+.pb p{font-size:14px;margin-bottom:14px}
+.pb .rate{font-size:15px;font-weight:700;color:var(--accent-ink)}
+.pb a{display:block;margin-top:14px;padding:10px;text-align:center;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-weight:600}
+.pb a:hover{border-color:var(--ink)}
+
+/* bulk note */
+.bulk-note{margin-top:26px;border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.bulk-note b{display:block;font-size:16px;margin-bottom:2px}
+.bulk-note span{font-size:14px;color:var(--ink-2)}
+@media(max-width:760px){.pb-grid{grid-template-columns:1fr}}
+
 /* results (before/after) */
 .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .res{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;position:relative}
@@ -244,16 +259,23 @@ footer{padding:48px 0 40px;border-top:1px solid var(--line);font-size:14px;color
 // PACKAGES  ·  must match the same prices in app.html and server/index.js
 // ─────────────────────────────────────────────────────────────────────
 const PACKAGES = [
-  {qty:100,    price:8.99,    was:null,    pop:false},
-  {qty:250,    price:20.40,   was:21.47,   pop:false},
-  {qty:500,    price:38.37,   was:40.39,   pop:false},
-  {qty:1000,   price:72.99,   was:74.99,   pop:true},
-  {qty:2000,   price:132.99,  was:139.99,  pop:false},
-  {qty:5000,   price:279.99,  was:299.99,  pop:false},
-  {qty:10000,  price:485.99,  was:539.99,  pop:false},
-  {qty:20000,  price:866.99,  was:1019.99, pop:false},
-  {qty:50000,  price:1919.99, was:2399.99, pop:false},
-  {qty:100000, price:3374.99, was:4499.99, pop:false},
+  {qty:100,    price:3,    was:null, pop:false},
+  {qty:250,    price:7,    was:7.5,  pop:false},
+  {qty:500,    price:13,   was:15,   pop:false},
+  {qty:1000,   price:25,   was:30,   pop:true },
+  {qty:2000,   price:48,   was:60,   pop:false},
+  {qty:5000,   price:110,  was:150,  pop:false},
+  {qty:10000,  price:210,  was:300,  pop:false},
+  {qty:20000,  price:415,  was:600,  pop:false},
+  {qty:50000,  price:1010, was:1500, pop:false},
+  {qty:100000, price:2000, was:3000, pop:false},
+];
+
+// Post Boost — fixed rate, no volume discount
+const POST_BOOST = [
+  {key:"likes",  name:"Likes",  blurb:"Add likes to one post or reel.",   from:2, rate:"$2 per 100"},
+  {key:"views",  name:"Views",  blurb:"Add views to a reel or video.",    from:1, rate:"$1 per 100"},
+  {key:"shares", name:"Shares", blurb:"Add shares to one post or reel.",  from:1, rate:"$1 per 100"},
 ];
 
 // ─────────────────────────────────────────────────────────────────────
@@ -268,7 +290,7 @@ const ROTATING = [
   {file:"media/rotate-1.jpg", caption:"1,000 followers delivered"},
   {file:"media/rotate-2.jpg", caption:"Before and after, 3 days"},
   {file:"media/rotate-3.jpg", caption:"5,000 follower order"},
-  {file:"media/rotate-4.jpg", caption:"Refill covered at day 21"},
+  {file:"media/rotate-4.jpg", caption:"Likes on a reel, same day"},
   {file:"media/rotate-5.jpg", caption:"Two accounts, one checkout"},
 ];
 const ROTATE_SPEED = 2400;   // milliseconds between photos
@@ -292,7 +314,7 @@ const RESULTS = [
 const REVIEWS = [
   {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Ordered 1K on Tuesday night, everything landed by Wednesday afternoon. Exactly the count I paid for.", photo:"media/review-1.jpg"},
   {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"media/review-2.jpg"},
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"A few dropped after two weeks and support refilled them the same day. That's the guarantee working.", photo:"media/review-3.jpg"},
+  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Used it for likes on a reel that was doing well. Pasted the link, paid, done in a few minutes.", photo:"media/review-3.jpg"},
 ];
 
 // ─────────────────────────────────────────────────────────────────────
@@ -330,8 +352,8 @@ const SUPPORT_EMAIL = "support@gramlift.com";
   <div class="wrap">
     <div>
       <span class="kicker">One-time payment. No subscription.</span>
-      <h1>Buy Instagram followers without signing up for a monthly plan.</h1>
-      <p class="lede">Pick a package, type in a username, pay by card. Delivery starts within 24 hours, and every order is covered by a 30-day refill guarantee.</p>
+      <h1>Grow your Instagram without signing up for a monthly plan.</h1>
+      <p class="lede">Pick a package, type in a username, pay by card. Delivery starts within 24 hours.</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="#pricing">See packages</a>
         <a class="btn btn-ghost btn-lg" href="#how">How it works</a>
@@ -340,7 +362,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>No password required</span>
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Secure Stripe checkout</span>
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Starts within 24 hours</span>
-        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>30-day refill</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Followers, likes, views and shares</span>
       </div>
     </div>
 
@@ -397,6 +419,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Only your username. Never your password</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Pay once. Nothing recurring</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Add several accounts to one cart</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>Boost a single post with likes, views or shares</li>
         </ul>
       </div>
     </div>
@@ -435,10 +458,19 @@ const SUPPORT_EMAIL = "support@gramlift.com";
   <div class="wrap">
     <div class="sec-head">
       <h2>Pricing</h2>
-      <p>Every package is a one-time purchase in USD. Larger packages cost less per follower.</p>
+      <p>Every package is a one-time purchase in USD. Followers go to an account, post boosts go to a single post.</p>
     </div>
     <div class="pk-grid" id="pkGrid"></div>
-    <p class="pk-note">Need something between two sizes, or more than one account? Log in and use the cart.</p>
+    <p class="pk-note">Larger packages cost less per follower. Add more than one account to a single cart.</p>
+
+    <h3 style="font-size:20px;margin:44px 0 6px">Post Boost</h3>
+    <p style="margin-bottom:22px;color:var(--ink-2)">Boost one post or reel instead of the whole account. Fixed rate, no minimum spend.</p>
+    <div class="pb-grid" id="pbGrid"></div>
+
+    <div class="bulk-note">
+      <div><b>Need a bigger order?</b><span>Anything above our largest package, or a bundle across several accounts, we quote individually.</span></div>
+      <a class="btn btn-ghost" id="bulkMail" href="#">Email us</a>
+    </div>
   </div>
 </section>
 
@@ -483,7 +515,8 @@ const SUPPORT_EMAIL = "support@gramlift.com";
     <div class="faq">
       <details class="q"><summary>Do you need my Instagram password?</summary><p>No. We only need the username of a public account. You never share login details with us.</p></details>
       <details class="q"><summary>How fast is delivery?</summary><p>Delivery starts within 24 hours of payment, usually much sooner. Larger packages are delivered gradually over a few days so the growth looks natural.</p></details>
-      <details class="q"><summary>What does the 30-day refill guarantee cover?</summary><p>If your follower count drops below what you ordered within 30 days, contact support and we top it back up at no charge.</p></details>
+      <details class="q"><summary>What happens if followers drop off?</summary><p>Some natural drop-off is normal on any platform. If a large part of an order disappears shortly after delivery, email us with your order reference and we will look at it case by case.</p></details>
+      <details class="q"><summary>Which posts can I boost?</summary><p>Likes, views and shares are applied to one specific post or reel, so you paste that link at checkout rather than a username. The post needs to be on a public account.</p></details>
       <details class="q"><summary>Does the account have to be public?</summary><p>Yes. Followers can't be delivered to a private account. You can switch it back to private once the order is complete.</p></details>
       <details class="q"><summary>Can I order for more than one account?</summary><p>Yes. Log in, add packages for each username to your cart, and pay once at checkout.</p></details>
       <details class="q"><summary>Is my payment secure?</summary><p>All payments run through Stripe, the same processor used by companies like Shopify and Amazon. GramLift never sees or stores your card details.</p></details>
@@ -500,7 +533,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
     <div class="final">
       <div>
         <h2>Pick a number. We'll deliver it.</h2>
-        <p>One payment, exact count, covered by a 30-day refill.</p>
+        <p>One payment, exact count, delivery within 24 hours.</p>
       </div>
       <a class="btn btn-primary btn-lg" href="#pricing">See packages</a>
     </div>
@@ -515,7 +548,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
     <div class="foot">
       <div>
         <a class="brand" href="/" style="font-size:18px;margin-bottom:10px"><span class="brand-mark" style="width:24px;height:24px"></span>GramLift</a>
-        <p style="max-width:300px;font-size:14px">Instagram followers, sold by the package. Delivered within 24 hours, backed by a 30-day refill.</p>
+        <p style="max-width:300px;font-size:14px">Instagram followers, likes, views and shares. Sold by the package, delivered within 24 hours.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -560,6 +593,16 @@ document.getElementById("pkGrid").innerHTML = PACKAGES.map(p => `
     <div class="price">${money(p.price)}</div>
     <a href="/app.html">Choose</a>
   </div>`).join("");
+
+// ─── render post boost ──────────────────────────────────────────────
+document.getElementById("pbGrid").innerHTML = POST_BOOST.map(p => `
+  <div class="pb">
+    <h4>${p.name}</h4>
+    <p>${p.blurb}</p>
+    <div class="rate">${p.rate}</div>
+    <a href="/app.html">Choose a package</a>
+  </div>`).join("");
+document.getElementById("bulkMail").href = "mailto:" + SUPPORT_EMAIL + "?subject=Bulk%20order%20enquiry";
 
 // ─── render results ─────────────────────────────────────────────────
 const num = n => n.toLocaleString("en-US");
