@@ -1,0 +1,80 @@
+HOW TO ADD PHOTOS TO GRAMLIFT
+=============================
+
+There is no upload button, and you do not need one.
+
+This folder IS the upload. Drag a photo in here with the right filename
+and it appears on the website. Replace the file with a different photo,
+same name, and the website changes. You never open the code.
+
+THREE STEPS, EVERY TIME
+-----------------------
+1. Rename your photo to one of the filenames below
+2. Drag it into  Desktop/gramlift/public/media/
+3. Open Terminal and run:
+       cd ~/Desktop/gramlift
+       git add .
+       git commit -m "new photos"
+       git push
+
+Wait about two minutes. Done.
+
+Any slot with no file is skipped automatically. Nothing breaks while a
+slot is empty, so you can fill them one at a time.
+
+
+THE SLOTS
+---------
+
+hero.jpg                 THE BIG ONE, top of the page
+                         Landscape, about 1200 x 900
+                         Someone on their phone works well.
+                         With a photo here the layout changes: the photo
+                         fills the space and the follower card shrinks
+                         onto its corner. Without one, the card shows
+                         on its own.
+
+face-1.jpg               THE FACES ROW, just under the hero
+face-2.jpg               Square, about 300 x 300
+face-3.jpg               A face filling most of the frame.
+face-4.jpg               Overlapping circles with a line of text beside
+                         them. Add two or add four, both look fine.
+                         None present and the whole row hides.
+
+step-1.jpg               "WHAT ORDERING LOOKS LIKE"
+step-2.jpg               About 900 wide, portrait or landscape
+step-3.jpg               These are screenshots of YOUR OWN SITE, taken
+                         by you:
+                           step-1  package grid, username typed in
+                           step-2  the Stripe payment page
+                           step-3  the confirmation page
+                         Empty slots show a plain numbered panel.
+
+rotate-1.jpg             THE ROTATING STRIP, beside the reviews
+rotate-2.jpg             Square, about 800 x 800
+rotate-3.jpg             Changes every 2.4 seconds. Two files is enough
+rotate-4.jpg             to make it rotate. Captions are edited in the
+rotate-5.jpg             ROTATING list near the top of index.html.
+
+review-1.jpg             REVIEW AVATARS
+review-2.jpg             Square, about 200 x 200
+review-3.jpg             Leave these empty until you have real customers.
+                         A stock face next to a quote reads as fake.
+                         Empty slots show a lettered circle instead.
+
+
+EDITING THE WORDS
+-----------------
+Open  public/index.html  and press Cmd+F for  EDIT ZONE
+Everything you would change day to day is in that block near the top:
+prices, rotating captions, review quotes, the faces line, step text,
+and the support email address.
+
+
+FILE TIPS
+---------
+Use .jpg, not .png. Much smaller files.
+Keep each one under about 300 KB so the page loads fast.
+Free photos cleared for commercial use: unsplash.com and pexels.com
+Search terms that fit: "friends smartphone laughing", "content creator
+filming", "young woman phone cafe", "phone screen hands"

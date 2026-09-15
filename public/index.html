@@ -77,6 +77,27 @@ section{padding:88px 0}
 .chip svg{width:16px;height:16px;color:var(--grow)}
 .kicker{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--accent-ink);background:var(--accent-soft);padding:6px 12px;border-radius:999px}
 
+/* hero photo sits behind, profile card floats on top of it */
+.stage.has-photo{padding:0}
+.hero-photo{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:var(--paper-2)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.stage.has-photo .ig-card{position:absolute;right:-14px;bottom:-22px;max-width:300px;padding:18px 20px 20px}
+.stage.has-photo .ig-avatar{width:54px;height:54px}
+.stage.has-photo .ig-avatar span{font-size:19px}
+.stage.has-photo .ig-stats{gap:16px}
+.stage.has-photo .ig-stat b{font-size:17px}
+.stage.has-photo .ig-stat span{font-size:11px}
+.stage.has-photo .ig-bio,.stage.has-photo .ig-follow,.stage.has-photo .ig-grid{display:none}
+.stage.has-photo .ticker-note{display:none}
+.stage.has-photo .pill{right:auto;left:-10px}
+
+/* faces band */
+.faces{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:56px;padding-top:26px;border-top:1px solid var(--line)}
+.faces .row{display:flex}
+.faces .row img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--paper);margin-left:-12px}
+.faces .row img:first-child{margin-left:0}
+.faces p{font-size:15px;color:var(--ink-2);margin:0}
+
 /* the memorable thing: a profile card that grows */
 .stage{position:relative;padding:20px 0 20px 20px}
 .ig-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px 28px 28px;box-shadow:0 30px 60px -30px rgba(28,25,23,.28),0 2px 6px rgba(28,25,23,.05);max-width:420px;margin-left:auto;position:relative}
@@ -143,6 +164,17 @@ section{padding:88px 0}
 .pk.pop a{background:var(--accent);color:#fff;border-color:var(--accent)}
 .pk-note{margin-top:18px;font-size:14px;color:var(--ink-3)}
 
+/* how ordering works */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:st}
+.stp{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.stp .shot{aspect-ratio:4/3;background:var(--paper-2);object-fit:cover;width:100%;display:block}
+.stp .blank{aspect-ratio:4/3;background:var(--paper-2);display:grid;place-items:center;color:var(--line);font-family:'Sora',sans-serif;font-size:56px;font-weight:800}
+.stp .body{padding:20px 22px 22px}
+.stp .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px}
+.stp h4{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px}
+.stp p{font-size:14px;margin:0}
+@media(max-width:760px){.steps-grid{grid-template-columns:1fr}}
+
 /* post boost */
 .pb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .pb{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:24px}
@@ -158,19 +190,8 @@ section{padding:88px 0}
 .bulk-note span{font-size:14px;color:var(--ink-2)}
 @media(max-width:760px){.pb-grid{grid-template-columns:1fr}}
 
-/* results (before/after) */
-.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.res{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;position:relative}
-.res .photo{aspect-ratio:4/3;background:linear-gradient(135deg,#f5f5f4,#e7e5e4);object-fit:cover;width:100%}
-.res .body{padding:18px 20px 20px}
-.res .handle{font-weight:600;font-size:15px}
-.res .niche{font-size:13px;color:var(--ink-3);margin-bottom:14px}
-.ba{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
-.ba b{display:block;font-family:'Sora',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em}
-.ba span{font-size:12px;color:var(--ink-3)}
-.ba .after b{color:var(--grow)}
-.ba .arrow{color:var(--ink-3)}
-.res .pkg{margin-top:12px;font-size:13px;color:var(--ink-2);background:var(--paper-2);border-radius:var(--r-sm);padding:7px 10px;display:inline-block}
+
+/* the small "Example" tag on placeholder review cards */
 .sample{position:absolute;top:12px;left:12px;background:#fff;border:1px solid var(--line);font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;color:var(--ink-3)}
 
 /* reviews */
@@ -196,13 +217,6 @@ section{padding:88px 0}
 .dots button{width:7px;height:7px;border-radius:50%;border:none;padding:0;background:var(--line);cursor:pointer;transition:background .2s,width .2s}
 .dots button.on{background:var(--accent);width:20px;border-radius:4px}
 
-/* support card */
-.support{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;margin-top:22px}
-.support .ph{aspect-ratio:4/3;background:var(--paper-2);object-fit:cover;width:100%;display:block}
-.support .ph-fb{aspect-ratio:4/3;display:grid;place-items:center;background:var(--ink);color:#fff;font-family:'Sora',sans-serif;font-size:34px;font-weight:700}
-.support .txt{padding:16px 18px}
-.support b{display:block;font-size:15px}
-.support span{font-size:13px;color:var(--ink-3)}
 
 /* faq */
 .faq{max-width:760px}
@@ -232,16 +246,16 @@ footer{padding:48px 0 40px;border-top:1px solid var(--line);font-size:14px;color
   .hero .wrap{grid-template-columns:1fr;gap:40px}
   .stage{padding:0}.ig-card{margin:0 auto}
   .pk-grid{grid-template-columns:repeat(3,1fr)}
-  .res-grid,.rv-grid,.steps{grid-template-columns:1fr 1fr}
+  .rv-grid,.steps{grid-template-columns:1fr 1fr}
   .final{grid-template-columns:1fr}.final .btn-primary{justify-self:start}
   .foot{grid-template-columns:1fr 1fr}
 }
 @media (max-width:640px){
   section{padding:64px 0}
-  .nav-links,.nav-cta .login{display:none}
+  .nav-links{display:none}
   .menu-btn{display:block}
   .nav.open .nav-links{display:flex;position:absolute;top:68px;left:0;right:0;background:#fff;flex-direction:column;padding:16px 24px;gap:14px;border-bottom:1px solid var(--line)}
-  .compare,.pk-grid,.res-grid,.rv-grid,.steps{grid-template-columns:1fr}
+  .compare,.pk-grid,.rv-grid,.steps{grid-template-columns:1fr}
   .pk-grid{grid-template-columns:1fr 1fr}
   .final{padding:32px}
   .foot{grid-template-columns:1fr}
@@ -296,14 +310,37 @@ const ROTATING = [
 const ROTATE_SPEED = 2400;   // milliseconds between photos
 
 // ─────────────────────────────────────────────────────────────────────
-// BEFORE / AFTER RESULTS  ·  three static cards, no movement
-// Photo slots:  media/result-1.jpg   media/result-2.jpg   media/result-3.jpg
-// Leave sample:true until the numbers are from a real order.
+// HERO PHOTO  ·  slot:  media/hero.jpg
+//
+// Landscape, roughly 1200 x 900. Someone on their phone works well.
+// Until the file exists the animated profile card shows on its own.
+// With a photo there, the card floats on top of it.
 // ─────────────────────────────────────────────────────────────────────
-const RESULTS = [
-  {sample:true, handle:"@yourhandle", niche:"Fitness coach, US",  before:2140, after:3140,  pkg:"1,000 followers", photo:"media/result-1.jpg"},
-  {sample:true, handle:"@yourhandle", niche:"Small business, UK", before:880,  after:1380,  pkg:"500 followers",   photo:"media/result-2.jpg"},
-  {sample:true, handle:"@yourhandle", niche:"Travel creator, DE", before:5300, after:10300, pkg:"5,000 followers", photo:"media/result-3.jpg"},
+const HERO_PHOTO = "media/hero.jpg";
+
+// ─────────────────────────────────────────────────────────────────────
+// FACES BAND  ·  slots:  media/face-1.jpg … media/face-4.jpg
+//
+// Square, roughly 300 x 300, a face filling most of the frame.
+// Missing files are skipped. If none are present the whole band hides.
+// ─────────────────────────────────────────────────────────────────────
+const FACES = ["media/face-1.jpg","media/face-2.jpg","media/face-3.jpg","media/face-4.jpg"];
+const FACES_LINE = "Built for creators and small businesses";
+
+// ─────────────────────────────────────────────────────────────────────
+// HOW ORDERING WORKS  ·  slots:  media/step-1.jpg … media/step-3.jpg
+//
+// Screenshots of your own site. Take them yourself:
+//   step-1  the package grid with a username typed in
+//   step-2  the Stripe payment page
+//   step-3  the confirmation page with an order reference
+// Portrait or landscape both fine, around 900 wide.
+// A missing file shows a plain numbered panel instead.
+// ─────────────────────────────────────────────────────────────────────
+const STEPS = [
+  {title:"Pick and enter",  text:"Choose a package and type the username, or paste a post link for likes, views and shares.", photo:"media/step-1.jpg"},
+  {title:"Pay by card",     text:"Checkout runs on Stripe. Visa, Mastercard and Amex. We never see your card details.",      photo:"media/step-2.jpg"},
+  {title:"Delivery starts", text:"You get an order reference straight away and delivery begins within 24 hours.",           photo:"media/step-3.jpg"},
 ];
 
 // ─────────────────────────────────────────────────────────────────────
@@ -316,11 +353,6 @@ const REVIEWS = [
   {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"media/review-2.jpg"},
   {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Used it for likes on a reel that was doing well. Pasted the link, paid, done in a few minutes.", photo:"media/review-3.jpg"},
 ];
-
-// ─────────────────────────────────────────────────────────────────────
-// SUPPORT CARD  ·  photo slot:  media/founder.jpg
-// ─────────────────────────────────────────────────────────────────────
-const SUPPORT_CARD = {show:true, name:"Nicholas", role:"Founder and support", photo:"media/founder.jpg"};
 
 const SUPPORT_EMAIL = "support@gramlift.com";
 </script>
@@ -339,7 +371,6 @@ const SUPPORT_EMAIL = "support@gramlift.com";
     </nav>
     <button class="menu-btn" onclick="document.getElementById('nav').classList.toggle('open')">Menu</button>
     <div class="nav-cta">
-      <a class="login" href="/app.html">Log in</a>
       <a class="btn btn-primary" href="#pricing">See packages</a>
     </div>
   </div>
@@ -366,8 +397,9 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       </div>
     </div>
 
-    <div class="stage">
-      <div class="ig-card" aria-label="Example Instagram profile gaining followers">
+    <div class="stage" id="stage">
+      <div class="hero-photo" id="heroPhoto" hidden></div>
+      <div class="ig-card" aria-label="Illustration of an Instagram profile gaining followers">
         <div class="ig-top">
           <div class="ig-avatar"><span>G</span></div>
           <div class="ig-stats">
@@ -385,6 +417,10 @@ const SUPPORT_EMAIL = "support@gramlift.com";
         <div class="pill" id="p3" style="top:106px"><span class="dot"></span>New follower <em>+1</em></div>
       </div>
       <div class="ticker-note">Illustration of a 1,000 follower package being delivered.</div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="faces" id="faces" hidden></div>
     </div>
   </div>
 </section>
@@ -475,15 +511,15 @@ const SUPPORT_EMAIL = "support@gramlift.com";
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     RESULTS
+     HOW ORDERING WORKS
      ═══════════════════════════════════════════════════════════════════ -->
 <section id="results">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Results</h2>
-      <p>Screenshots from real orders. We add new ones as customers share them.</p>
+      <h2>What ordering looks like</h2>
+      <p>Three steps from picking a package to delivery starting. No account needed.</p>
     </div>
-    <div class="res-grid" id="resGrid"></div>
+    <div class="steps-grid" id="stepsGrid"></div>
   </div>
 </section>
 
@@ -500,7 +536,6 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       <div>
         <div class="rot" id="rot"><div class="empty">Add photos to public/media/ to fill this space.</div></div>
         <div class="dots" id="dots"></div>
-        <div id="supportCard"></div>
       </div>
     </div>
   </div>
@@ -518,7 +553,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       <details class="q"><summary>What happens if followers drop off?</summary><p>Some natural drop-off is normal on any platform. If a large part of an order disappears shortly after delivery, email us with your order reference and we will look at it case by case.</p></details>
       <details class="q"><summary>Which posts can I boost?</summary><p>Likes, views and shares are applied to one specific post or reel, so you paste that link at checkout rather than a username. The post needs to be on a public account.</p></details>
       <details class="q"><summary>Does the account have to be public?</summary><p>Yes. Followers can't be delivered to a private account. You can switch it back to private once the order is complete.</p></details>
-      <details class="q"><summary>Can I order for more than one account?</summary><p>Yes. Log in, add packages for each username to your cart, and pay once at checkout.</p></details>
+      <details class="q"><summary>Can I order for more than one account?</summary><p>Yes. Add a package for each username to your cart and pay once at checkout. No account needed.</p></details>
       <details class="q"><summary>Is my payment secure?</summary><p>All payments run through Stripe, the same processor used by companies like Shopify and Amazon. GramLift never sees or stores your card details.</p></details>
       <details class="q"><summary>What if something goes wrong?</summary><p>Email <a href="mailto:" id="faqMail" style="color:var(--accent-ink);font-weight:600"></a> with your order reference and we'll sort it out.</p></details>
     </div>
@@ -554,7 +589,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
         <h4>Product</h4>
         <a href="#pricing">Pricing</a>
         <a href="#how">How it works</a>
-        <a href="/app.html">Log in</a>
+        <a href="/app.html">Order now</a>
       </div>
       <div>
         <h4>Support</h4>
@@ -604,23 +639,28 @@ document.getElementById("pbGrid").innerHTML = POST_BOOST.map(p => `
   </div>`).join("");
 document.getElementById("bulkMail").href = "mailto:" + SUPPORT_EMAIL + "?subject=Bulk%20order%20enquiry";
 
-// ─── render results ─────────────────────────────────────────────────
-const num = n => n.toLocaleString("en-US");
-document.getElementById("resGrid").innerHTML = RESULTS.map(r => `
-  <div class="res">
-    ${r.sample ? '<span class="sample">Example</span>' : ""}
-    ${r.photo ? `<img class="photo" src="${r.photo}" alt="Profile screenshot for ${r.handle}" onerror="this.outerHTML=\'<div class=&quot;photo&quot;></div>\'">` : '<div class="photo"></div>'}
+// ─── render "what ordering looks like" ──────────────────────────────
+// Each screenshot slot is tested first. A slot with no file shows a plain
+// numbered panel, so the section always looks finished.
+document.getElementById("stepsGrid").innerHTML = STEPS.map((st, i) => `
+  <div class="stp">
+    <div class="blank" data-slot="${i}">${i + 1}</div>
     <div class="body">
-      <div class="handle">${r.handle}</div>
-      <div class="niche">${r.niche}</div>
-      <div class="ba">
-        <div><b>${num(r.before)}</b><span>before</span></div>
-        <div class="arrow">&rarr;</div>
-        <div class="after"><b>${num(r.after)}</b><span>after</span></div>
-      </div>
-      <div class="pkg">${r.pkg}</div>
+      <span class="n">${i + 1}</span>
+      <h4>${st.title}</h4>
+      <p>${st.text}</p>
     </div>
   </div>`).join("");
+
+STEPS.forEach((st, i) => {
+  if (!st.photo) return;
+  const img = new Image();
+  img.onload = () => {
+    const slot = document.querySelector(`.blank[data-slot="${i}"]`);
+    if (slot) slot.outerHTML = `<img class="shot" src="${st.photo}" alt="${st.title}">`;
+  };
+  img.src = st.photo;
+});
 
 // ─── render reviews ─────────────────────────────────────────────────
 document.getElementById("rvGrid").innerHTML = REVIEWS.map(r => `
@@ -679,19 +719,37 @@ document.getElementById("yr").textContent = new Date().getFullYear();
   });
 })();
 
-// ─── support card ───────────────────────────────────────────────────
+// ─── hero photo ─────────────────────────────────────────────────────
+// With a photo present the hero switches layout: photo fills the space
+// and the profile card shrinks onto its corner. Without one, the card
+// shows on its own exactly as before.
 (function(){
-  if (!SUPPORT_CARD.show) return;
-  const el = document.getElementById("supportCard");
-  const initial = SUPPORT_CARD.name.trim()[0] || "G";
-  el.innerHTML = `<div class="support">
-      <div class="ph-fb">${initial}</div>
-      <div class="txt"><b>${SUPPORT_CARD.name}</b><span>${SUPPORT_CARD.role}</span></div>
-    </div>`;
+  if (!HERO_PHOTO) return;
   const img = new Image();
-  img.onload = () => { el.querySelector(".ph-fb").outerHTML =
-    `<img class="ph" src="${SUPPORT_CARD.photo}" alt="${SUPPORT_CARD.name}">`; };
-  img.src = SUPPORT_CARD.photo;
+  img.onload = () => {
+    const box = document.getElementById("heroPhoto");
+    box.innerHTML = `<img src="${HERO_PHOTO}" alt="">`;
+    box.hidden = false;
+    document.getElementById("stage").classList.add("has-photo");
+  };
+  img.src = HERO_PHOTO;
+})();
+
+// ─── faces band ─────────────────────────────────────────────────────
+// Only the files that actually exist are shown. None present, band hidden.
+(function(){
+  Promise.all(FACES.map(src => new Promise(res => {
+    const im = new Image();
+    im.onload  = () => res(src);
+    im.onerror = () => res(null);
+    im.src = src;
+  }))).then(found => {
+    const live = found.filter(Boolean);
+    if (!live.length) return;
+    const band = document.getElementById("faces");
+    band.innerHTML = `<div class="row">${live.map(s => `<img src="${s}" alt="">`).join("")}</div><p>${FACES_LINE}</p>`;
+    band.hidden = false;
+  });
 })();
 
 // ─── hero follower ticker ───────────────────────────────────────────
