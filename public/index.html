@@ -67,8 +67,40 @@ section{padding:88px 0}
 .menu-btn{display:none;margin-left:auto;background:none;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-family:inherit;font-weight:600;cursor:pointer}
 
 /* ─── HERO ───────────────────────────────────────────────────────────── */
-.hero{padding:72px 0 80px;overflow:hidden}
-.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero{padding:72px 0 80px;overflow:hidden;position:relative;isolation:isolate}
+
+/* ── AURORA BACKGROUND ───────────────────────────────────────────────
+   Soft coloured light behind the hero. Two blurred blobs that drift
+   very slowly. Nothing to upload, this is pure CSS.
+
+   TO MAKE IT STRONGER OR WEAKER: change the two `opacity` values below.
+     .28 / .22  = current, dim
+     .45 / .40  = clearly colourful
+     0          = off
+   TO CHANGE THE COLOURS: edit the three colours in each radial-gradient.
+   ──────────────────────────────────────────────────────────────────── */
+.hero::before,
+.hero::after{content:"";position:absolute;z-index:-1;pointer-events:none;
+  border-radius:50%;filter:blur(90px)}
+
+.hero::before{
+  width:820px;height:640px;top:-260px;left:-200px;opacity:.28;   /* AURORA 1 */
+  background:radial-gradient(closest-side,#fb923c,#f9731666,transparent);
+  animation:aurora1 26s ease-in-out infinite alternate}
+
+.hero::after{
+  width:760px;height:600px;top:-160px;right:-220px;opacity:.22;  /* AURORA 2 */
+  background:radial-gradient(closest-side,#a78bfa,#f472b666,transparent);
+  animation:aurora2 32s ease-in-out infinite alternate}
+
+@keyframes aurora1{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to  {transform:translate3d(90px,60px,0) scale(1.15)}}
+@keyframes aurora2{
+  from{transform:translate3d(0,0,0) scale(1.1)}
+  to  {transform:translate3d(-80px,70px,0) scale(1)}}
+
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;position:relative;z-index:1}
 .hero h1{margin:18px 0 20px}
 .hero .lede{margin-bottom:30px}
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:30px}
@@ -79,6 +111,8 @@ section{padding:88px 0}
 
 /* hero photo sits behind, profile card floats on top of it */
 .stage.has-photo{padding:0}
+/* SIZE · HERO PHOTO — aspect-ratio is the shape of the frame.
+   4/3 = wide (1200x900) · 1/1 = square · 16/9 = very wide · 3/4 = tall */
 .hero-photo{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:var(--paper-2)}
 .hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .stage.has-photo .ig-card{position:absolute;right:-14px;bottom:-22px;max-width:300px;padding:18px 20px 20px}
@@ -89,14 +123,40 @@ section{padding:88px 0}
 .stage.has-photo .ig-stat span{font-size:11px}
 .stage.has-photo .ig-bio,.stage.has-photo .ig-follow,.stage.has-photo .ig-grid{display:none}
 .stage.has-photo .ticker-note{display:none}
-.stage.has-photo .pill{right:auto;left:-10px}
+/* With a photo, the card shrinks onto the corner, so the "+1" pills are
+   moved out over the photo instead of sitting on top of the stats. */
+.stage.has-photo .pill{right:auto;left:auto;margin-left:-186px;white-space:nowrap}
 
-/* faces band */
-.faces{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:56px;padding-top:26px;border-top:1px solid var(--line)}
-.faces .row{display:flex}
-.faces .row img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--paper);margin-left:-12px}
-.faces .row img:first-child{margin-left:0}
-.faces p{font-size:15px;color:var(--ink-2);margin:0}
+/* ── FACES BAND · a moving row of creator photos ──────────────────── */
+/* this wrap holds one full-width thing, not the hero's two columns */
+.hero .wrap.wrap-solo{display:block}
+.faces{margin-top:56px;padding-top:30px;border-top:1px solid var(--line);min-width:0}
+.faces p{font-size:15px;color:var(--ink-2);margin:0 0 20px;font-weight:500}
+
+/* the window the row scrolls inside; edges fade out */
+.faces .marquee{overflow:hidden;min-width:0;max-width:100%;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+
+/* SIZE · FACES — one number controls how big each circle is.
+   96px = current · 72px smaller · 120px bigger
+   SPEED — change 34s below. Bigger number = slower. */
+.faces .row{display:flex;gap:18px;width:max-content;
+  animation:facesRoll 34s linear infinite}
+.faces .row img{width:96px;height:96px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--paper);flex-shrink:0;
+  box-shadow:0 10px 24px -12px rgba(28,25,23,.35);
+  transition:transform .25s ease}
+.faces .row img:hover{transform:scale(1.08)}
+.faces .marquee:hover .row{animation-play-state:paused}
+
+@keyframes facesRoll{from{transform:translate3d(0,0,0)}
+                     to  {transform:translate3d(-50%,0,0)}}
+
+@media (prefers-reduced-motion:reduce){
+  .faces .row{animation:none}
+  .hero::before,.hero::after{animation:none}
+}
 
 /* the memorable thing: a profile card that grows */
 .stage{position:relative;padding:20px 0 20px 20px}
@@ -132,6 +192,18 @@ section{padding:88px 0}
 .alt{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 
 /* compare */
+/* ── heading with a photo beside it ───────────────────────────────── */
+.head-split{display:grid;grid-template-columns:1fr;gap:44px;align-items:center;margin-bottom:44px}
+.head-split.has-photo{grid-template-columns:1fr 420px}   /* SIZE · picture column width */
+.head-split .sec-head{margin-bottom:0}
+
+/* SIZE · COMPARE PHOTO — 5/4 = slightly wide. Try 1/1 square or 4/3.
+   The 420px above is how wide the picture column is. */
+.head-photo{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);
+  background:var(--paper-2);aspect-ratio:5/4;
+  box-shadow:0 30px 60px -34px rgba(28,25,23,.34)}
+.head-photo img{width:100%;height:100%;object-fit:cover;display:block}
+
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .col{border:1px solid var(--line);border-radius:var(--r-lg);padding:28px;background:#fff}
 .col.us{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
@@ -192,12 +264,44 @@ section{padding:88px 0}
 
 
 /* the small "Example" tag on placeholder review cards */
+/* the "Example" tag. Inside the steps grid it still floats in a corner. */
 .sample{position:absolute;top:12px;left:12px;background:#fff;border:1px solid var(--line);font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;color:var(--ink-3)}
 
 /* reviews */
 .rv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .rv{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;padding:22px;position:relative;display:flex;flex-direction:column;gap:14px}
-.rv .stars{color:#f59e0b;font-size:15px;letter-spacing:2px}
+
+/* top row of a review card: stars on the left, the tag on the right.
+   They sit in a flex row now, so they can no longer overlap. */
+.rv .rv-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rv .rv-top .sample{position:static;flex-shrink:0}
+
+/* SIZE · STARS — 22px is the star size. Bigger number = bigger stars. */
+.rv .stars{display:flex;gap:3px;font-size:22px;line-height:1;color:#f59e0b}
+.rv .stars i{font-style:normal;display:inline-block;
+  filter:drop-shadow(0 2px 4px rgba(245,158,11,.45));
+  animation:starPop 2.6s cubic-bezier(.34,1.56,.64,1) infinite}
+.rv .stars i.off{color:var(--line);filter:none;animation:none}
+/* each star starts a beat after the one before it, so they ripple across.
+   --cd is set per card so card 2 ripples after card 1, and so on. */
+.rv .stars i:nth-child(1){animation-delay:calc(var(--cd,0s) + 0s)}
+.rv .stars i:nth-child(2){animation-delay:calc(var(--cd,0s) + .11s)}
+.rv .stars i:nth-child(3){animation-delay:calc(var(--cd,0s) + .22s)}
+.rv .stars i:nth-child(4){animation-delay:calc(var(--cd,0s) + .33s)}
+.rv .stars i:nth-child(5){animation-delay:calc(var(--cd,0s) + .44s)}
+.rv:hover .stars i{animation-duration:1.1s}
+
+@keyframes starPop{
+   0%{transform:translateY(0) scale(1) rotate(0)}
+   6%{transform:translateY(-9px) scale(1.28) rotate(-9deg)}
+  13%{transform:translateY(0) scale(1) rotate(0)}
+  19%{transform:translateY(-4px) scale(1.12) rotate(5deg)}
+  26%{transform:translateY(0) scale(1) rotate(0)}
+ 100%{transform:translateY(0) scale(1) rotate(0)}}
+
+@media (prefers-reduced-motion:reduce){
+  .rv .stars i{animation:none;filter:none}
+}
 .rv blockquote{font-size:15px;color:var(--ink);line-height:1.6}
 .rv .who{display:flex;align-items:center;gap:12px;margin-top:auto}
 .rv .who img,.rv .who .init{width:42px;height:42px;border-radius:50%;object-fit:cover}
@@ -207,7 +311,12 @@ section{padding:88px 0}
 .rv video{width:100%;border-radius:var(--r);aspect-ratio:9/16;object-fit:cover;background:#000;max-height:360px}
 
 /* rotating photo strip */
-.rot-wrap{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start}
+/* SIZE · 340px is how wide the photo column beside the reviews is. */
+.rot-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start}
+/* the two stacked photo frames beside the reviews */
+.rot-stack{display:grid;gap:18px}
+/* SIZE · ROTATING PHOTOS — 1/1 = square. Try 4/5 tall or 4/3 wide.
+   The 340px on .rot-wrap above is how wide this whole column is. */
 .rot{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--paper-2);aspect-ratio:1}
 .rot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
 .rot img.on{opacity:1}
@@ -247,6 +356,10 @@ footer{padding:48px 0 40px;border-top:1px solid var(--line);font-size:14px;color
   .stage{padding:0}.ig-card{margin:0 auto}
   .pk-grid{grid-template-columns:repeat(3,1fr)}
   .rv-grid,.steps{grid-template-columns:1fr 1fr}
+  .head-split,.head-split.has-photo{grid-template-columns:1fr;gap:28px}
+  .head-photo{aspect-ratio:16/9}
+  .rot-wrap{grid-template-columns:1fr}
+  .rot-stack{grid-template-columns:1fr 1fr}
   .final{grid-template-columns:1fr}.final .btn-primary{justify-self:start}
   .foot{grid-template-columns:1fr 1fr}
 }
@@ -257,8 +370,25 @@ footer{padding:48px 0 40px;border-top:1px solid var(--line);font-size:14px;color
   .nav.open .nav-links{display:flex;position:absolute;top:68px;left:0;right:0;background:#fff;flex-direction:column;padding:16px 24px;gap:14px;border-bottom:1px solid var(--line)}
   .compare,.pk-grid,.rv-grid,.steps{grid-template-columns:1fr}
   .pk-grid{grid-template-columns:1fr 1fr}
+  .rot-stack{grid-template-columns:1fr}
+  .faces .row img{width:76px;height:76px}   /* SIZE · faces on phones */
+  /* the floating "+1" pills need room either side, which phones don't
+     have once the card sits in the photo's corner, so they step aside */
+  .stage.has-photo .pill{display:none}
   .final{padding:32px}
   .foot{grid-template-columns:1fr}
+}
+/* narrow phones: the brand, Menu and the button all share one short row */
+@media (max-width:430px){
+  .wrap{padding-left:16px;padding-right:16px}
+  .brand{font-size:19px;gap:8px}
+  .nav-cta .btn{padding:8px 12px;font-size:13px}
+  .menu-btn{padding:8px 11px;font-size:13px}
+}
+/* very old small phones: the header button drops, since the same button
+   is a few lines further down in the hero anyway */
+@media (max-width:359px){
+  .nav-cta{display:none}
 }
 </style>
 </head>
@@ -293,11 +423,16 @@ const POST_BOOST = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────
-// ROTATING PHOTOS  ·  the strip beside the reviews, changes every 2.4s
+// ROTATING PHOTOS  ·  TWO frames beside the reviews, one above the other
 //
 // Drop your files into  public/media/  using these exact names:
-//     rotate-1.jpg  rotate-2.jpg  rotate-3.jpg  rotate-4.jpg  rotate-5.jpg
+//   TOP frame:     rotate-1.jpg … rotate-5.jpg
+//   BOTTOM frame:  rotate-b-1.jpg … rotate-b-5.jpg
+//
 // Any name missing from the folder is skipped automatically.
+// If you have no rotate-b-*.jpg files at all, the bottom frame borrows
+// the top frame's photos and just starts on a different one, so the two
+// are never showing the same picture.
 // Square images work best. Roughly 800x800 pixels.
 // ─────────────────────────────────────────────────────────────────────
 const ROTATING = [
@@ -307,7 +442,17 @@ const ROTATING = [
   {file:"media/rotate-4.jpg", caption:"Likes on a reel, same day"},
   {file:"media/rotate-5.jpg", caption:"Two accounts, one checkout"},
 ];
-const ROTATE_SPEED = 2400;   // milliseconds between photos
+
+const ROTATING_B = [
+  {file:"media/rotate-b-1.jpg", caption:"250 followers, overnight"},
+  {file:"media/rotate-b-2.jpg", caption:"Views on a new reel"},
+  {file:"media/rotate-b-3.jpg", caption:"10,000 follower order"},
+  {file:"media/rotate-b-4.jpg", caption:"Shares on a carousel post"},
+  {file:"media/rotate-b-5.jpg", caption:"Repeat customer, third order"},
+];
+
+const ROTATE_SPEED  = 2400;  // milliseconds between photos (both frames)
+const ROTATE_OFFSET = 500;   // bottom frame lags the top by this much
 
 // ─────────────────────────────────────────────────────────────────────
 // HERO PHOTO  ·  slot:  media/hero.jpg
@@ -319,12 +464,29 @@ const ROTATE_SPEED = 2400;   // milliseconds between photos
 const HERO_PHOTO = "media/hero.jpg";
 
 // ─────────────────────────────────────────────────────────────────────
-// FACES BAND  ·  slots:  media/face-1.jpg … media/face-4.jpg
+// COMPARE PHOTO  ·  slot:  media/compare.jpg
 //
-// Square, roughly 300 x 300, a face filling most of the frame.
-// Missing files are skipped. If none are present the whole band hides.
+// Sits beside "Most growth services charge you every month...".
+// Slightly wide, roughly 1000 x 800. A person working on a phone or
+// laptop suits this spot.
+// Leave the file out of the folder and the space closes up by itself.
 // ─────────────────────────────────────────────────────────────────────
-const FACES = ["media/face-1.jpg","media/face-2.jpg","media/face-3.jpg","media/face-4.jpg"];
+const COMPARE_PHOTO = "media/compare.jpg";
+
+// ─────────────────────────────────────────────────────────────────────
+// FACES BAND  ·  slots:  media/face-1.jpg … media/face-10.jpg
+//
+// This row now scrolls slowly across the page and the circles are much
+// larger. Four photos is enough, but the more you add the better the
+// scroll looks. Missing files are skipped. None present, the band hides.
+//
+// Square, roughly 400 x 400, a face filling most of the frame.
+// ─────────────────────────────────────────────────────────────────────
+const FACES = [
+  "media/face-1.jpg","media/face-2.jpg","media/face-3.jpg","media/face-4.jpg",
+  "media/face-5.jpg","media/face-6.jpg","media/face-7.jpg","media/face-8.jpg",
+  "media/face-9.jpg","media/face-10.jpg",
+];
 const FACES_LINE = "Built for creators and small businesses";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -349,9 +511,9 @@ const STEPS = [
 // No photo in the folder yet? The card shows a lettered circle instead.
 // ─────────────────────────────────────────────────────────────────────
 const REVIEWS = [
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Ordered 1K on Tuesday night, everything landed by Wednesday afternoon. Exactly the count I paid for.", photo:"media/review-1.jpg"},
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"media/review-2.jpg"},
-  {sample:true, name:"First name L.", handle:"@handle", stars:5, quote:"Used it for likes on a reel that was doing well. Pasted the link, paid, done in a few minutes.", photo:"media/review-3.jpg"},
+  {sample:false, name:"First name L.", handle:"@handle", stars:5, quote:"Ordered 1K on Tuesday night, everything landed by Wednesday afternoon. Exactly the count I paid for.", photo:"media/review-1.jpg"},
+  {sample:false, name:"First name L.", handle:"@handle", stars:5, quote:"I liked that I didn't have to hand over my password or sign up for a monthly plan.", photo:"media/review-2.jpg"},
+  {sample:false, name:"First name L.", handle:"@handle", stars:5, quote:"Used it for likes on a reel that was doing well. Pasted the link, paid, done in a few minutes.", photo:"media/review-3.jpg"},
 ];
 
 const SUPPORT_EMAIL = "support@gramlift.com";
@@ -419,9 +581,8 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       <div class="ticker-note">Illustration of a 1,000 follower package being delivered.</div>
     </div>
   </div>
-  <div class="wrap">
+  <div class="wrap wrap-solo">
     <div class="faces" id="faces" hidden></div>
-    </div>
   </div>
 </section>
 
@@ -430,9 +591,12 @@ const SUPPORT_EMAIL = "support@gramlift.com";
      ═══════════════════════════════════════════════════════════════════ -->
 <section class="alt">
   <div class="wrap">
-    <div class="sec-head">
-      <h2>Most growth services charge you every month and won't tell you what you'll get.</h2>
-      <p>We took the opposite approach. You choose the number, you pay once, you're done.</p>
+    <div class="head-split" id="compareHead">
+      <div class="sec-head">
+        <h2>Most growth services charge you every month and won't tell you what you'll get.</h2>
+        <p>We took the opposite approach. You choose the number, you pay once, you're done.</p>
+      </div>
+      <div class="head-photo" id="comparePhoto" hidden></div>
     </div>
     <div class="compare">
       <div class="col them">
@@ -533,9 +697,15 @@ const SUPPORT_EMAIL = "support@gramlift.com";
     </div>
     <div class="rot-wrap">
       <div class="rv-grid" id="rvGrid" style="grid-template-columns:1fr"></div>
-      <div>
-        <div class="rot" id="rot"><div class="empty">Add photos to public/media/ to fill this space.</div></div>
-        <div class="dots" id="dots"></div>
+      <div class="rot-stack">
+        <div>
+          <div class="rot" id="rot"><div class="empty">Add photos to public/media/ to fill this space.</div></div>
+          <div class="dots" id="dots"></div>
+        </div>
+        <div id="rotBWrap" hidden>
+          <div class="rot" id="rotB"></div>
+          <div class="dots" id="dotsB"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -663,10 +833,18 @@ STEPS.forEach((st, i) => {
 });
 
 // ─── render reviews ─────────────────────────────────────────────────
-document.getElementById("rvGrid").innerHTML = REVIEWS.map(r => `
-  <div class="rv">
-    ${r.sample ? '<span class="sample">Example</span>' : ""}
-    <div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
+// The stars and the "Example" tag now share one row, so they cannot
+// overlap. Each star is its own element so it can bounce on its own beat.
+document.getElementById("rvGrid").innerHTML = REVIEWS.map((r, ci) => `
+  <div class="rv" style="--cd:${(ci * 0.7).toFixed(2)}s">
+    <div class="rv-top">
+      <div class="stars" aria-label="${r.stars} out of 5 stars">${
+        Array.from({length:5}, (_, n) =>
+          `<i aria-hidden="true"${n < r.stars ? "" : ' class="off"'}>${n < r.stars ? "★" : "☆"}</i>`
+        ).join("")
+      }</div>
+      ${r.sample ? '<span class="sample">Example</span>' : ""}
+    </div>
     <blockquote>"${r.quote}"</blockquote>
     <div class="who">
       ${r.photo ? `<img src="${r.photo}" alt="" onerror="this.outerHTML=\'<div class=&quot;init&quot;>${r.name.trim()[0]||"?"}</div>\'">` : `<div class="init">${r.name.trim()[0] || "?"}</div>`}
@@ -678,27 +856,31 @@ document.getElementById("rvGrid").innerHTML = REVIEWS.map(r => `
 document.getElementById("yr").textContent = new Date().getFullYear();
 ["faqMail","footMail"].forEach(id => { const a = document.getElementById(id); a.href = "mailto:" + SUPPORT_EMAIL; if (id === "faqMail") a.textContent = SUPPORT_EMAIL; });
 
-// ─── rotating photo strip ───────────────────────────────────────────
-// Each file is tested first. Names that are not in /media/ are skipped,
-// so empty slots never show a broken image.
+// ─── rotating photo frames ──────────────────────────────────────────
+// Two frames, one above the other. Each file is tested first, so names
+// that are not in /media/ are skipped and never show a broken image.
+// Both frames change at the same speed; the bottom one simply starts
+// ROTATE_OFFSET milliseconds later, so they tick one after the other.
 (function(){
-  const rot = document.getElementById("rot"), dots = document.getElementById("dots");
-  let live = [], i = 0, timer = null;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  Promise.all(ROTATING.map(r => new Promise(res => {
+  // check which of a list of files actually exist in /media/
+  const probe = list => Promise.all(list.map(r => new Promise(res => {
     const img = new Image();
     img.onload  = () => res(r);
     img.onerror = () => res(null);
     img.src = r.file;
-  }))).then(found => {
-    live = found.filter(Boolean);
-    if (!live.length) return;
+  }))).then(found => found.filter(Boolean));
+
+  // build one working frame
+  function mount(rot, dots, live, startAt, delay, key){
+    let i = startAt % live.length, timer = null;
 
     rot.innerHTML = live.map((r,n) =>
-      `<img src="${r.file}" alt="${r.caption}" class="${n===0?"on":""}">`).join("")
-      + `<div class="cap">${live[0].caption}</div>`;
+      `<img src="${r.file}" alt="${r.caption}" class="${n===i?"on":""}">`).join("")
+      + `<div class="cap">${live[i].caption}</div>`;
     dots.innerHTML = live.map((_,n) =>
-      `<button class="${n===0?"on":""}" aria-label="Photo ${n+1}" onclick="window.__goto(${n})"></button>`).join("");
+      `<button class="${n===i?"on":""}" aria-label="Photo ${n+1}" onclick="window.${key}(${n})"></button>`).join("");
 
     const show = n => {
       i = n;
@@ -706,17 +888,44 @@ document.getElementById("yr").textContent = new Date().getFullYear();
       rot.querySelector(".cap").textContent = live[n].caption;
       dots.querySelectorAll("button").forEach((el,k) => el.classList.toggle("on", k===n));
     };
-    window.__goto = n => { show(n); restart(); };
-
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const restart = () => {
       clearInterval(timer);
       if (!reduce && live.length > 1) timer = setInterval(() => show((i+1) % live.length), ROTATE_SPEED);
     };
-    restart();
+
+    window[key] = n => { show(n); restart(); };
+    setTimeout(restart, delay);                    // the head start / lag
     rot.addEventListener("mouseenter", () => clearInterval(timer));
     rot.addEventListener("mouseleave", restart);
+  }
+
+  Promise.all([probe(ROTATING), probe(ROTATING_B)]).then(([top, bottom]) => {
+    if (top.length) mount(document.getElementById("rot"), document.getElementById("dots"), top, 0, 0, "__goto");
+
+    // No rotate-b-*.jpg files yet? Borrow the top frame's photos and
+    // start on a different one, so the two are never the same picture.
+    const lower = bottom.length ? bottom : top;
+    const start = bottom.length ? 0 : 1;
+    if (lower.length){
+      document.getElementById("rotBWrap").hidden = false;
+      mount(document.getElementById("rotB"), document.getElementById("dotsB"), lower, start, ROTATE_OFFSET, "__gotoB");
+    }
   });
+})();
+
+// ─── compare photo ──────────────────────────────────────────────────
+// Only shows if media/compare.jpg exists. If not, the heading goes back
+// to full width on its own.
+(function(){
+  if (!COMPARE_PHOTO) return;
+  const img = new Image();
+  img.onload = () => {
+    const box = document.getElementById("comparePhoto");
+    box.innerHTML = `<img src="${COMPARE_PHOTO}" alt="">`;
+    box.hidden = false;
+    document.getElementById("compareHead").classList.add("has-photo");
+  };
+  img.src = COMPARE_PHOTO;
 })();
 
 // ─── hero photo ─────────────────────────────────────────────────────
@@ -746,13 +955,27 @@ document.getElementById("yr").textContent = new Date().getFullYear();
   }))).then(found => {
     const live = found.filter(Boolean);
     if (!live.length) return;
+
+    // For a seamless loop the row holds the photos twice over and slides
+    // exactly half its width, so it restarts where it began. With only a
+    // couple of photos we repeat them until the row is wide enough.
+    let set = live.slice();
+    while (set.length < 8) set = set.concat(live);
+    const one = set.map(s => `<img src="${s}" alt="" loading="lazy">`).join("");
+
     const band = document.getElementById("faces");
-    band.innerHTML = `<div class="row">${live.map(s => `<img src="${s}" alt="">`).join("")}</div><p>${FACES_LINE}</p>`;
+    band.innerHTML =
+      `<p>${FACES_LINE}</p>` +
+      `<div class="marquee"><div class="row" aria-hidden="true">${one}${one}</div></div>`;
     band.hidden = false;
   });
 })();
 
 // ─── hero follower ticker ───────────────────────────────────────────
+// BUGFIX: num() was being called but never defined, which threw an error
+// and froze the counter on 2,140. It puts the commas into a number.
+function num(n){ return n.toLocaleString("en-US"); }
+
 (function(){
   const el = document.getElementById("tick");
   const start = 2140, end = 3140, dur = 4200;
