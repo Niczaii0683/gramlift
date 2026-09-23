@@ -17,7 +17,7 @@ THREE STEPS, EVERY TIME
        git commit -m "new photos"
        git push
 
-Wait about two minutes. Done.
+Wait about two minutes, then hard refresh the site with Cmd+Shift+R.
 
 Any slot with no file is skipped automatically. Nothing breaks while a
 slot is empty, so you can fill them one at a time.
@@ -35,11 +35,26 @@ hero.jpg                 THE BIG ONE, top of the page
                          on its own.
 
 face-1.jpg               THE FACES ROW, just under the hero
-face-2.jpg               Square, about 300 x 300
+face-2.jpg               Square, about 400 x 400
 face-3.jpg               A face filling most of the frame.
-face-4.jpg               Overlapping circles with a line of text beside
-                         them. Add two or add four, both look fine.
+face-4.jpg
+face-5.jpg               This row is now BIG (96px circles) and it
+face-6.jpg               scrolls slowly across the page by itself.
+face-7.jpg               Hovering the mouse over it pauses it.
+face-8.jpg
+face-9.jpg               Four photos is enough to start. The more you
+face-10.jpg              add, the better the scroll looks, because with
+                         only a few it has to repeat them to keep the
+                         loop seamless.
                          None present and the whole row hides.
+
+compare.jpg              BESIDE "Most growth services charge you
+                         every month..."
+                         Slightly wide, about 1000 x 800
+                         A person working on a phone or laptop suits
+                         this spot.
+                         No file here and the heading simply goes full
+                         width. No empty box is left behind.
 
 step-1.jpg               "WHAT ORDERING LOOKS LIKE"
 step-2.jpg               About 900 wide, portrait or landscape
@@ -50,17 +65,47 @@ step-3.jpg               These are screenshots of YOUR OWN SITE, taken
                            step-3  the confirmation page
                          Empty slots show a plain numbered panel.
 
-rotate-1.jpg             THE ROTATING STRIP, beside the reviews
+rotate-1.jpg             THE TOP ROTATING FRAME, beside the reviews
 rotate-2.jpg             Square, about 800 x 800
 rotate-3.jpg             Changes every 2.4 seconds. Two files is enough
-rotate-4.jpg             to make it rotate. Captions are edited in the
-rotate-5.jpg             ROTATING list near the top of index.html.
+rotate-4.jpg             to make it rotate.
+rotate-5.jpg
+
+rotate-b-1.jpg           THE BOTTOM ROTATING FRAME, directly underneath
+rotate-b-2.jpg           Square, about 800 x 800
+rotate-b-3.jpg           Same speed as the top one, but it ticks half a
+rotate-b-4.jpg           second later, so the two never change at the
+rotate-b-5.jpg           same moment.
+                         If you have NO rotate-b files at all, this
+                         frame borrows the top frame's photos and starts
+                         on a different one, so you never see the same
+                         picture twice on screen. Add real files here
+                         when you have them.
 
 review-1.jpg             REVIEW AVATARS
 review-2.jpg             Square, about 200 x 200
 review-3.jpg             Leave these empty until you have real customers.
                          A stock face next to a quote reads as fake.
                          Empty slots show a lettered circle instead.
+
+
+CHANGING THE SIZE OF ANY PHOTO SPACE
+------------------------------------
+Open  public/index.html  and press Cmd+F for       SIZE
+There are eight of them. Each one sits right above the setting it
+controls, and says what to change.
+
+The shape of a photo frame is set by "aspect-ratio":
+       4/3   wide            (1200 x 900)
+       1/1   square          (1200 x 1200)
+       16/9  very wide
+       3/4   tall
+
+So to make the hero square, find the SIZE note for HERO PHOTO and
+change  aspect-ratio:4/3  to  aspect-ratio:1/1
+
+The faces are set by one number instead:
+       width:96px;height:96px       both numbers must match
 
 
 EDITING THE WORDS
@@ -70,10 +115,17 @@ Everything you would change day to day is in that block near the top:
 prices, rotating captions, review quotes, the faces line, step text,
 and the support email address.
 
+To remove the little grey "Example" tag on a review card, find that
+review's line in the REVIEWS list and change
+       sample:true      to      sample:false
+Do it on all three lines to clear all three tags.
+
 
 FILE TIPS
 ---------
 Use .jpg, not .png. Much smaller files.
+The name must end in .jpg exactly. If Finder shows hero.jpeg, rename it
+to hero.jpg or the site will not find it.
 Keep each one under about 300 KB so the page loads fast.
 Free photos cleared for commercial use: unsplash.com and pexels.com
 Search terms that fit: "friends smartphone laughing", "content creator
