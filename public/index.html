@@ -239,8 +239,8 @@ section{padding:88px 0}
 /* how ordering works */
 .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:st}
 .stp{border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;overflow:hidden;display:flex;flex-direction:column}
-.stp .shot{aspect-ratio:4/3;background:var(--paper-2);object-fit:cover;width:100%;display:block}
-.stp .blank{aspect-ratio:4/3;background:var(--paper-2);display:grid;place-items:center;color:var(--line);font-family:'Sora',sans-serif;font-size:56px;font-weight:800}
+.stp .shot{aspect-ratio:1/1;background:var(--paper-2);object-fit:cover;width:100%;display:block}
+.stp .blank{aspect-ratio:1/1;background:var(--paper-2);display:grid;place-items:center;color:var(--line);font-family:'Sora',sans-serif;font-size:56px;font-weight:800}
 .stp .body{padding:20px 22px 22px}
 .stp .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;margin-bottom:12px}
 .stp h4{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px}
@@ -641,7 +641,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       </div>
       <div class="step">
         <h3>Enter the username</h3>
-        <p>Just the @handle. The account needs to be public. Add more than one account if you manage several.</p>
+        <p>Just the @handle. The account needs to be PUBLIC. Add more than one account if you manage several.</p>
       </div>
       <div class="step">
         <h3>Pay by card</h3>
