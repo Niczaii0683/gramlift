@@ -33,7 +33,9 @@ const app    = express();
 app.use("/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(cors({ origin: process.env.FRONTEND_URL || "*" }));
-app.use(express.static(path.join(__dirname, "../public")));
+// extensions:["html"] lets /track serve public/track.html, and /success serve
+// public/success.html, without the customer needing to type ".html".
+app.use(express.static(path.join(__dirname, "../public"), { extensions: ["html"] }));
 
 // ═════════════════════════════════════════════════════════════════════════════
 // PRODUCTS
@@ -84,6 +86,42 @@ const PRODUCTS = {
 };
 
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "support@gramlift.com";
+
+// ═════════════════════════════════════════════════════════════════════════════
+// DRY RUN
+//
+// Set  DRY_RUN=true  in Render to rehearse the whole money path without
+// spending SocialLegend credit. Stripe still charges, the webhook still fires,
+// the order row is still written to the Google Sheet, but the supplier call is
+// skipped and the row is marked TEST instead of fulfilled.
+//
+// Turn it off by deleting the variable, or setting it to anything but "true".
+// ═════════════════════════════════════════════════════════════════════════════
+const DRY_RUN = String(process.env.DRY_RUN || "").trim().toLowerCase() === "true";
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ORDER REFERENCE
+//
+// One checkout gets ONE reference, shared by every line in the cart. It is
+// derived from the Stripe session id, so the success page can work it out on
+// its own without waiting for the webhook, and it will always match what the
+// webhook writes to the Sheet.
+//
+// This is the number the customer types into /track.
+// ═════════════════════════════════════════════════════════════════════════════
+function orderRef(sessionId) {
+  return "GL-" + String(sessionId || "").slice(-8).toUpperCase();
+}
+
+// Accepts "GL-A1B2C3D4", "gl-a1b2c3d4" or bare "A1B2C3D4".
+function normaliseRef(v) {
+  const s = String(v || "").trim().toUpperCase().replace(/\s+/g, "");
+  return s.startsWith("GL-") ? s : (s ? "GL-" + s : "");
+}
+
+function normaliseEmail(v) {
+  return String(v || "").trim().toLowerCase();
+}
 
 // ═════════════════════════════════════════════════════════════════════════════
 // VALIDATION
@@ -196,7 +234,7 @@ async function postToSheet(url, payload, tag) {
 function logOrder(record) {
   return postToSheet(process.env.GOOGLE_SHEET_WEBHOOK_URL, {
     timestamp:  record.createdAt,        // column A
-    orderId:    record.id,               // column B
+    orderId:    record.ref,              // column B  GL-A1B2C3D4, what /track accepts
     email:      record.email || "",      // column C
     product:    record.label,            // column D
     target:     record.shown,            // column E  @handle or p/ABC123
@@ -227,9 +265,10 @@ function logCustomer({ email, amount, orderId, targets }) {
 // ═════════════════════════════════════════════════════════════════════════════
 const orders = [];   // in memory only, cleared on restart. Sheets are the record.
 
-async function fulfillLine({ sessionId, email, line }) {
+async function fulfillLine({ sessionId, email, line, ref }) {
   const record = {
     id:        "GL-" + Date.now() + "-" + Math.floor(Math.random() * 900 + 100),
+    ref:       ref || orderRef(sessionId),   // what the customer sees and types into /track
     sessionId, email,
     type:  line.type,
     label: line.label,
@@ -240,6 +279,25 @@ async function fulfillLine({ sessionId, email, line }) {
     createdAt: new Date().toISOString(),
   };
   orders.push(record);
+
+  if (DRY_RUN) {
+    // Rehearsal. Nothing is sent to SocialLegend and no credit is spent.
+    record.status          = "TEST";
+    record.supplierOrderId = "";
+    console.log(
+      `\n[DRY RUN] would have placed:\n` +
+      `          product  ${line.label}\n` +
+      `          service  ${line.serviceId}\n` +
+      `          quantity ${line.qty}\n` +
+      `          link     ${line.link}\n` +
+      `          target   ${line.shown}\n` +
+      `          price    $${line.price}\n` +
+      `          ref      ${record.ref}\n` +
+      `          NOT sent. DRY_RUN is true.`
+    );
+    await logOrder(record);
+    return record;
+  }
 
   try {
     const result = await callSocialLegend(line);
@@ -370,17 +428,165 @@ app.post("/webhook", async (req, res) => {
     console.error(`[Webhook] expected ${count} lines, recovered ${lines.length}. Check /api/orders and refund or retry the missing ones.`);
   }
 
+  // One reference for the whole checkout, shared by every line.
+  const ref = orderRef(session.id);
+  console.log(`[Webhook] order reference ${ref}${DRY_RUN ? "  (DRY RUN, nothing will be sent to SocialLegend)" : ""}`);
+
   const targets = [];
   for (const l of lines) {
     targets.push(l.n);
     await fulfillLine({
       sessionId: session.id,
       email,
+      ref,
       line: { type: l.t, label: PRODUCTS[l.t]?.label || l.t, serviceId: l.s, qty: l.q, link: l.l, shown: l.n, price: l.p },
     });
   }
 
-  await logCustomer({ email, amount, orderId: session.id, targets });
+  await logCustomer({ email, amount, orderId: ref, targets });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ORDER TRACKING  ·  POST /api/track   { email, orderId }
+//
+// WHERE THE DATA COMES FROM, and why it matters:
+//
+//   orders[] above is in MEMORY. Render's free tier sleeps after 15 minutes of
+//   no traffic and wipes it. An order placed on Monday is gone by Tuesday. So
+//   memory is only a fast path for orders placed since the last restart.
+//
+//   The Google Sheet is the permanent record. /track reads from there, which
+//   means GOOGLE_SHEET_WEBHOOK_URL must be set AND the Apps Script must have
+//   the doGet lookup from sheets_orders.js. Without that, tracking only works
+//   for the last few hours and customers will be told their order is not found.
+//
+// A customer must supply BOTH the reference and the email on the order. That
+// pairing is the only thing standing in for a password, so both must match.
+// ═════════════════════════════════════════════════════════════════════════════
+
+// Turns a SocialLegend status into the three words the customer sees.
+function friendlyStatus(ourStatus, slStatus) {
+  if (ourStatus === "TEST")   return { label: "Test order",  note: "Placed with DRY_RUN on. Nothing was sent to the supplier." };
+  if (ourStatus === "failed") return { label: "Needs attention", note: "Payment went through but the order did not place. Email us and we will fix it or refund you." };
+
+  const s = String(slStatus || "").trim().toLowerCase();
+  if (s === "completed")                    return { label: "Completed",   note: "Delivered in full." };
+  if (s === "in progress" || s === "processing") return { label: "In progress", note: "Delivery is under way." };
+  if (s === "pending")                      return { label: "Processing",  note: "Queued with our supplier, starting shortly." };
+  if (s === "partial")                      return { label: "Partly delivered", note: "Some of the order was delivered. Email us about the rest." };
+  if (s === "canceled" || s === "cancelled") return { label: "Cancelled",  note: "This order was cancelled. Email us if you were charged." };
+
+  // No supplier id yet, or the supplier did not answer.
+  return { label: "Processing", note: "Your payment is confirmed and the order is being placed." };
+}
+
+// Ask SocialLegend where one supplier order has got to.
+async function slStatus(supplierOrderId) {
+  if (!supplierOrderId) return null;
+  try {
+    const body = new URLSearchParams({
+      key: process.env.SOCIALLEGEND_API_KEY, action: "status", order: String(supplierOrderId),
+    });
+    const r = await fetch("https://sociallegend.com.my/api/v2", {
+      method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString(),
+    });
+    const d = await r.json();
+    return d && !d.error ? d : null;
+  } catch (err) {
+    console.error("[SL status]", err.message);
+    return null;
+  }
+}
+
+// Ask the orders Sheet for every row matching this reference and email.
+async function lookupInSheet(ref, email) {
+  const base = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (!base) return { ok: false, reason: "no-sheet" };
+
+  const url = base + (base.includes("?") ? "&" : "?")
+            + "action=lookup&ref=" + encodeURIComponent(ref)
+            + "&email=" + encodeURIComponent(email);
+  try {
+    const r = await fetch(url, { method: "GET", redirect: "follow" });
+    const text = await r.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch {
+      console.error("[Sheets] lookup did not return JSON. Is the doGet lookup deployed?");
+      return { ok: false, reason: "bad-reply" };
+    }
+    return { ok: true, rows: Array.isArray(data.rows) ? data.rows : [] };
+  } catch (err) {
+    console.error("[Sheets] lookup failed:", err.message);
+    return { ok: false, reason: "unreachable" };
+  }
+}
+
+app.post("/api/track", async (req, res) => {
+  const ref   = normaliseRef(req.body?.orderId);
+  const email = normaliseEmail(req.body?.email);
+
+  if (!ref || ref === "GL-")            return res.status(400).json({ error: "Please enter your order number." });
+  if (!email || !email.includes("@"))   return res.status(400).json({ error: "Please enter the email address you paid with." });
+
+  // 1. Memory first. Instant, and covers anything since the last restart.
+  let lines = orders
+    .filter(o => o.ref === ref && normaliseEmail(o.email) === email)
+    .map(o => ({
+      createdAt: o.createdAt, label: o.label, qty: o.qty,
+      target: o.shown, ourStatus: o.status, supplierOrderId: o.supplierOrderId || "",
+    }));
+
+  let source = "memory";
+
+  // 2. Fall back to the Sheet, which is the permanent record.
+  if (lines.length === 0) {
+    const sheet = await lookupInSheet(ref, email);
+
+    if (!sheet.ok) {
+      const why = sheet.reason === "no-sheet"
+        ? "Order lookup is not configured yet (GOOGLE_SHEET_WEBHOOK_URL is not set)."
+        : "The order records are not reachable right now.";
+      console.error("[Track] " + why);
+      return res.status(503).json({
+        error: `We can't look that up at the moment. Please email ${SUPPORT_EMAIL} with your order number and we'll check it by hand.`,
+      });
+    }
+
+    lines = sheet.rows.map(r => ({
+      createdAt: r.timestamp, label: r.product, qty: Number(r.quantity) || r.quantity,
+      target: r.target, ourStatus: r.status, supplierOrderId: r.supplierId || "",
+    }));
+    source = "sheet";
+  }
+
+  if (lines.length === 0) {
+    // Deliberately vague. Do not reveal whether the reference or the email was
+    // the part that did not match.
+    return res.status(404).json({
+      error: "We couldn't find an order with that number and email. Check both and try again, or forward your Stripe receipt to " + SUPPORT_EMAIL + ".",
+    });
+  }
+
+  // 3. Ask SocialLegend for live progress on each line.
+  const out = [];
+  for (const l of lines) {
+    const live  = await slStatus(l.supplierOrderId);
+    const fs    = friendlyStatus(l.ourStatus, live?.status);
+    out.push({
+      date:     l.createdAt,
+      product:  l.label,
+      quantity: l.qty,
+      target:   l.target,
+      status:   fs.label,
+      note:     fs.note,
+      remains:  live?.remains ?? null,
+      startCount: live?.start_count ?? null,
+    });
+  }
+
+  console.log(`[Track] ${ref} · ${out.length} line(s) · from ${source}`);
+  res.json({ orderId: ref, lines: out });
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -402,6 +608,13 @@ app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
     mode:   live ? "LIVE" : "TEST",
+    dryRun: DRY_RUN,
+    warning: (DRY_RUN && live)
+      ? "DANGER: DRY_RUN is ON with a LIVE Stripe key. Real cards are being charged and NOTHING is being delivered. Turn DRY_RUN off."
+      : undefined,
+    tracking: process.env.GOOGLE_SHEET_WEBHOOK_URL
+      ? "orders sheet set (confirm the doGet lookup is deployed)"
+      : "NOT WORKING — /track needs GOOGLE_SHEET_WEBHOOK_URL",
     stripe:        process.env.STRIPE_SECRET_KEY ? "configured" : "MISSING",
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ? "configured" : "MISSING",
     socialLegend:  process.env.SOCIALLEGEND_API_KEY ? "configured" : "MISSING",
@@ -477,7 +690,25 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   const live = String(process.env.STRIPE_SECRET_KEY || "").startsWith("sk_live");
   console.log(`\nGramLift running on http://localhost:${PORT}`);
-  console.log(`Stripe mode: ${live ? "LIVE — real money" : "TEST"}`);
+  console.log(`Stripe mode: ${live ? "LIVE, real money" : "TEST"}`);
+
+  if (DRY_RUN) {
+    console.log("\n" + "=".repeat(70));
+    console.log("  DRY_RUN IS ON");
+    console.log("  Orders will NOT be sent to SocialLegend. Sheet rows say TEST.");
+    if (live) {
+      console.log("");
+      console.log("  *** WARNING: your Stripe key is LIVE. ***");
+      console.log("  *** Real customers will be charged and get NOTHING. ***");
+      console.log("  *** Turn DRY_RUN off before taking real orders.    ***");
+    }
+    console.log("=".repeat(70));
+  }
+
+  if (!process.env.GOOGLE_SHEET_WEBHOOK_URL) {
+    console.warn("\n[Track] GOOGLE_SHEET_WEBHOOK_URL is not set.");
+    console.warn("[Track] /track will only find orders placed since this restart.");
+  }
   console.log("Services:", Object.entries(PRODUCTS).map(([k, p]) => `${k}=${p.serviceId}`).join("  "));
   console.log(`\n  health   http://localhost:${PORT}/api/health`);
   console.log(`  products http://localhost:${PORT}/api/products`);

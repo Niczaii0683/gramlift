@@ -37,22 +37,54 @@
 function showSuccess() {
   const params    = new URLSearchParams(window.location.search);
   const sessionId = params.get("session_id") || "";
-  const shortRef  = sessionId.slice(-8).toUpperCase();
+
+  // The server works out the same reference the same way, from the same
+  // session id, so what is shown here always matches the order records.
+  const ref = "GL-" + sessionId.slice(-8).toUpperCase();
 
   document.getElementById("card").innerHTML = `
     <div style="font-size:64px;margin-bottom:12px">🎉</div>
-    <h1>Payment Confirmed!</h1>
-    <p>Thank you! Your order has been placed and followers will start arriving on your Instagram within 1–3 business days.</p>
+    <h1>Payment confirmed</h1>
+    <p>Thank you. Your order is placed and delivery starts within 24 hours.</p>
+
     <div class="detail-box">
-      <div class="detail-row"><span>Status</span><span style="color:#15803d">✅ Paid</span></div>
-      <div class="detail-row"><span>Order reference</span><span>GL-${shortRef}</span></div>
-      <div class="detail-row"><span>Delivery</span><span>1–3 business days</span></div>
-      <div class="detail-row"><span>Guarantee</span><span>90-day refill</span></div>
+      <div class="detail-row"><span>Status</span><span style="color:#15803d">Paid</span></div>
+      <div class="detail-row"><span>Delivery</span><span>Starts within 24 hours</span></div>
     </div>
-    <div class="badge">✅ Your order is being processed automatically.</div>
-    <a class="home-btn" href="/">Back to Dashboard</a>
-    <p style="margin-top:16px;font-size:12px;color:#9ca3af">Check your email for a receipt from Stripe.</p>
+
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:18px 20px;margin:20px 0">
+      <div style="font-size:12px;color:#9a3412;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+        Your order number
+      </div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:.02em;color:#1c1917;font-family:ui-monospace,SFMono-Regular,Menlo,monospace">
+        ${ref}
+      </div>
+      <button id="copyBtn" style="margin-top:12px;padding:8px 14px;font-size:13px;font-weight:600;
+        border:1px solid #fed7aa;background:#fff;color:#9a3412;border-radius:8px;cursor:pointer;font-family:inherit">
+        Copy
+      </button>
+      <div style="font-size:12px;color:#9a3412;margin-top:10px;line-height:1.5">
+        Write this down. You need it, plus the email you paid with, to check your order.
+      </div>
+    </div>
+
+    <a class="home-btn" href="/track?order=${encodeURIComponent(ref)}">Track this order</a>
+    <p style="margin-top:16px;font-size:12px;color:#9ca3af">
+      Stripe has emailed you a receipt. <a href="/" style="color:#9ca3af">Back to the site</a>
+    </p>
   `;
+
+  const btn = document.getElementById("copyBtn");
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(ref);
+      btn.textContent = "Copied";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1800);
+    } catch {
+      btn.textContent = "Select it above";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1800);
+    }
+  });
 }
 
 // Small delay so it feels like something happened

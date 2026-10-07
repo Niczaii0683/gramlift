@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Track your order · GramLift</title>
+<meta name="description" content="Check the status of a GramLift order with your order number and email.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c1917; --ink-2:#44403c; --ink-3:#78716c;
+  --line:#e7e5e4; --paper:#ffffff; --paper-2:#faf9f7;
+  --accent:#e8560e; --accent-ink:#b8420a; --accent-soft:#fff1e9;
+  --grow:#15803d; --grow-soft:#ecfdf3;
+  --warn:#b45309; --warn-soft:#fffbeb;
+  --bad:#b91c1c;  --bad-soft:#fef2f2;
+  --grad:linear-gradient(135deg,#dc2626,#ea580c,#f59e0b);
+  --r-sm:8px; --r:14px; --r-lg:22px; --max:760px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--paper);
+  line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Sora',sans-serif;letter-spacing:-.03em;line-height:1.15}
+h1{font-size:34px;font-weight:800}
+
+/* nav */
+.nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.9);
+  backdrop-filter:blur(10px);z-index:20}
+.nav .wrap{display:flex;align-items:center;gap:16px;height:68px}
+.brand{font-family:'Sora',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.03em;
+  display:flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--grad);display:block}
+.nav a.back{margin-left:auto;font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none}
+.nav a.back:hover{color:var(--accent-ink)}
+
+main{padding:56px 0 80px}
+.lede{font-size:17px;color:var(--ink-2);margin:12px 0 32px}
+
+/* form */
+form{border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;background:var(--paper-2)}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+.hint{font-size:13px;color:var(--ink-3);font-weight:400;margin-bottom:7px}
+input{width:100%;font-family:inherit;font-size:15px;padding:12px 14px;border:1.5px solid var(--line);
+  border-radius:var(--r);background:#fff;color:var(--ink)}
+input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.field{margin-bottom:18px}
+button{font-family:inherit;font-size:15px;font-weight:700;padding:13px 26px;border:none;
+  border-radius:var(--r);background:var(--accent);color:#fff;cursor:pointer;width:100%}
+button:hover{background:var(--accent-ink)}
+button:disabled{opacity:.6;cursor:default}
+
+/* messages */
+.msg{border-radius:var(--r);padding:14px 16px;font-size:14px;margin-top:20px}
+.msg.bad{background:var(--bad-soft);border:1px solid #fecaca;color:var(--bad)}
+
+/* results */
+.results{margin-top:32px}
+.ref{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.ref b{font-family:'Sora',sans-serif;font-size:21px}
+.ref span{font-size:14px;color:var(--ink-3)}
+.line{border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;margin-bottom:14px;background:#fff}
+.line-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.line-top h3{font-size:18px}
+.pill{font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.pill.done{background:var(--grow-soft);color:var(--grow);border:1px solid #bbf7d0}
+.pill.going{background:var(--accent-soft);color:var(--accent-ink);border:1px solid #fed7aa}
+.pill.wait{background:var(--paper-2);color:var(--ink-2);border:1px solid var(--line)}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border:1px solid #fde68a}
+.pill.bad{background:var(--bad-soft);color:var(--bad);border:1px solid #fecaca}
+.rows{display:grid;gap:0}
+.row{display:flex;justify-content:space-between;gap:14px;font-size:14px;padding:8px 0;
+  border-bottom:1px solid var(--paper-2)}
+.row:last-child{border-bottom:none}
+.row span:first-child{color:var(--ink-3)}
+.row span:last-child{font-weight:600;text-align:right;word-break:break-all}
+.note{font-size:13px;color:var(--ink-3);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.foot-help{font-size:14px;color:var(--ink-2);margin-top:26px}
+.foot-help a{color:var(--accent-ink);font-weight:600}
+
+@media(max-width:560px){
+  h1{font-size:27px}
+  main{padding:40px 0 60px}
+  form{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="brand-mark"></span>GramLift</a>
+    <a class="back" href="/">Back to site</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Track your order</h1>
+  <p class="lede">Enter your order number and the email you paid with. No account needed.</p>
+
+  <form id="form" novalidate>
+    <div class="field">
+      <label for="orderId">Order number</label>
+      <div class="hint">On your confirmation page, like GL-A1B2C3D4</div>
+      <input id="orderId" name="orderId" type="text" placeholder="GL-A1B2C3D4"
+             autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+    </div>
+    <div class="field">
+      <label for="email">Email address</label>
+      <div class="hint">The one you used at checkout</div>
+      <input id="email" name="email" type="email" placeholder="you@example.com"
+             autocomplete="email" spellcheck="false" required>
+    </div>
+    <button type="submit" id="btn">Find my order</button>
+  </form>
+
+  <div id="msg"></div>
+  <div class="results" id="results"></div>
+
+  <p class="foot-help">
+    Can't find it? Forward your Stripe receipt to <a id="mail" href="#">our support email</a>
+    and we'll look it up by hand.
+  </p>
+</main>
+
+<script>
+const SUPPORT_FALLBACK = "support@gramlift.com";
+
+// Pull the support address from the server so it lives in one place.
+let SUPPORT = SUPPORT_FALLBACK;
+fetch("/api/products")
+  .then(r => r.json())
+  .then(d => { if (d.supportEmail) SUPPORT = d.supportEmail; setMail(); })
+  .catch(() => setMail());
+
+function setMail(){
+  const a = document.getElementById("mail");
+  a.href = "mailto:" + SUPPORT;
+  a.textContent = SUPPORT;
+}
+setMail();
+
+const form    = document.getElementById("form");
+const btn     = document.getElementById("btn");
+const msgBox  = document.getElementById("msg");
+const results = document.getElementById("results");
+
+// Deep link support: /track?order=GL-A1B2C3D4 prefills the box.
+const qs = new URLSearchParams(location.search);
+if (qs.get("order")) document.getElementById("orderId").value = qs.get("order");
+if (qs.get("email")) document.getElementById("email").value   = qs.get("email");
+
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+
+function pillClass(status){
+  if (status === "Completed")        return "done";
+  if (status === "In progress")      return "going";
+  if (status === "Processing")       return "wait";
+  if (status === "Partly delivered") return "warn";
+  if (status === "Test order")       return "warn";
+  return "bad";
+}
+
+function when(iso){
+  const d = new Date(iso);
+  if (isNaN(d)) return esc(iso);
+  return d.toLocaleDateString("en-GB", { day:"numeric", month:"short", year:"numeric" })
+       + " at " + d.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" });
+}
+
+function num(n){
+  return typeof n === "number" ? n.toLocaleString("en-US") : esc(n);
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  msgBox.innerHTML = "";
+  results.innerHTML = "";
+  btn.disabled = true;
+  btn.textContent = "Looking...";
+
+  try {
+    const r = await fetch("/api/track", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId: document.getElementById("orderId").value,
+        email:   document.getElementById("email").value,
+      }),
+    });
+    const data = await r.json();
+
+    if (!r.ok) {
+      msgBox.innerHTML = '<div class="msg bad">' + esc(data.error || "Something went wrong. Please try again.") + '</div>';
+      return;
+    }
+
+    results.innerHTML =
+      '<div class="ref"><b>' + esc(data.orderId) + '</b><span>'
+      + data.lines.length + (data.lines.length === 1 ? ' item' : ' items') + '</span></div>'
+      + data.lines.map(l => `
+        <div class="line">
+          <div class="line-top">
+            <h3>${esc(l.product)}</h3>
+            <span class="pill ${pillClass(l.status)}">${esc(l.status)}</span>
+          </div>
+          <div class="rows">
+            <div class="row"><span>Ordered</span><span>${when(l.date)}</span></div>
+            <div class="row"><span>Quantity</span><span>${num(l.quantity)}</span></div>
+            <div class="row"><span>Going to</span><span>${esc(l.target)}</span></div>
+            ${l.remains !== null && l.remains !== undefined
+              ? `<div class="row"><span>Still to deliver</span><span>${num(l.remains)}</span></div>` : ""}
+          </div>
+          ${l.note ? `<div class="note">${esc(l.note)}</div>` : ""}
+        </div>`).join("");
+
+  } catch (err) {
+    msgBox.innerHTML = '<div class="msg bad">Could not reach the server. Check your connection and try again.</div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Find my order";
+  }
+});
+</script>
+</body>
+</html>
