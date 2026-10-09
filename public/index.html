@@ -191,6 +191,52 @@ section{padding:88px 0}
 .sec-head p{margin-top:12px;font-size:17px}
 .alt{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 
+/* ── SECTION TINTS ───────────────────────────────────────────────────
+   Soft aurora washes down the page, same colour family as the hero but
+   calmer and still. These are plain radial-gradients painted straight
+   onto the section, not blurred layers, so they cost almost nothing to
+   draw and phones handle them without breaking a sweat.
+
+   TO ADJUST STRENGTH: the last number inside each rgba() is the opacity.
+     .05  barely there
+     .12  current, gentle
+     .25  obvious
+   TO CHANGE A COLOUR: swap the three numbers inside rgba().
+   TO TURN ONE OFF: delete the class from that <section> tag below.
+   ──────────────────────────────────────────────────────────────────── */
+.band{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+.tint-peach{
+  background-color:#fffdfb;
+  background-image:
+    radial-gradient(75% 85% at 5% 0%,    rgba(251,146,60,.13), transparent 68%),
+    radial-gradient(65% 75% at 98% 100%, rgba(244,114,182,.09), transparent 70%);
+}
+.tint-lav{
+  background-color:#fdfcff;
+  background-image:
+    radial-gradient(70% 85% at 95% 0%,   rgba(167,139,250,.17), transparent 68%),
+    radial-gradient(65% 75% at 2% 100%,  rgba(129,140,248,.12), transparent 70%);
+}
+.tint-mint{
+  background-color:#fbfefc;
+  background-image:
+    radial-gradient(72% 85% at 8% 0%,    rgba(52,211,153,.13), transparent 68%),
+    radial-gradient(62% 75% at 96% 100%, rgba(45,212,191,.10), transparent 70%);
+}
+
+/* The packages section. Deliberately warmer and stronger than the rest,
+   so the eye lands here. This is the part that makes money. */
+.tint-pricing{
+  background-color:#fff8f2;
+  background-image:
+    radial-gradient(70% 80% at 0% 0%,    rgba(234,88,12,.17),  transparent 66%),
+    radial-gradient(75% 85% at 100% 10%, rgba(245,158,11,.15), transparent 68%),
+    radial-gradient(60% 70% at 50% 100%, rgba(251,146,60,.10), transparent 72%);
+  border-top:1px solid #fed7aa;
+  border-bottom:1px solid #fed7aa;
+}
+
 /* compare */
 /* ── heading with a photo beside it ───────────────────────────────── */
 .head-split{display:grid;grid-template-columns:1fr;gap:44px;align-items:center;margin-bottom:44px}
@@ -526,9 +572,8 @@ const SUPPORT_EMAIL = "support@gramlift.com";
   <div class="wrap">
     <a class="brand" href="/"><span class="brand-mark"></span>GramLift</a>
     <nav class="nav-links">
-      <a href="#how">How it works</a>
+      <a href="#results">How it works</a>
       <a href="#pricing">Pricing</a>
-      <a href="#results">Results</a>
       <a href="#faq">FAQ</a>
       <a href="/track">Track order</a>
     </nav>
@@ -550,7 +595,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       <p class="lede">Pick a package, type in a username, pay by card. Delivery starts within 24 hours.</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="#pricing">See packages</a>
-        <a class="btn btn-ghost btn-lg" href="#how">How it works</a>
+        <a class="btn btn-ghost btn-lg" href="#results">How it works</a>
       </div>
       <div class="chips">
         <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>No password required</span>
@@ -590,7 +635,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
 <!-- ═══════════════════════════════════════════════════════════════════
      COMPARE
      ═══════════════════════════════════════════════════════════════════ -->
-<section class="alt">
+<section class="band tint-peach">
   <div class="wrap">
     <div class="head-split" id="compareHead">
       <div class="sec-head">
@@ -628,34 +673,9 @@ const SUPPORT_EMAIL = "support@gramlift.com";
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     HOW IT WORKS
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="how">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Three steps. About two minutes.</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <h3>Choose a package</h3>
-        <p>Ten sizes from 100 to 100,000 followers. Prices are on the page, nothing is hidden behind a quote.</p>
-      </div>
-      <div class="step">
-        <h3>Enter the username</h3>
-        <p>Just the @handle. The account needs to be public. Add more than one account if you manage several.</p>
-      </div>
-      <div class="step">
-        <h3>Pay by card</h3>
-        <p>Checkout runs on Stripe. We never see your card details. Delivery begins within 24 hours of payment.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════════════
      PRICING
      ═══════════════════════════════════════════════════════════════════ -->
-<section id="pricing" class="alt">
+<section id="pricing" class="band tint-pricing">
   <div class="wrap">
     <div class="sec-head">
       <h2>Pricing</h2>
@@ -678,7 +698,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
 <!-- ═══════════════════════════════════════════════════════════════════
      HOW ORDERING WORKS
      ═══════════════════════════════════════════════════════════════════ -->
-<section id="results">
+<section id="results" class="tint-lav">
   <div class="wrap">
     <div class="sec-head">
       <h2>What ordering looks like</h2>
@@ -691,7 +711,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
 <!-- ═══════════════════════════════════════════════════════════════════
      REVIEWS
      ═══════════════════════════════════════════════════════════════════ -->
-<section class="alt">
+<section class="band tint-mint">
   <div class="wrap">
     <div class="sec-head">
       <h2>What customers say</h2>
@@ -715,7 +735,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
 <!-- ═══════════════════════════════════════════════════════════════════
      FAQ
      ═══════════════════════════════════════════════════════════════════ -->
-<section id="faq">
+<section id="faq" class="tint-peach">
   <div class="wrap">
     <div class="sec-head"><h2>Questions people ask before ordering</h2></div>
     <div class="faq">
@@ -759,7 +779,7 @@ const SUPPORT_EMAIL = "support@gramlift.com";
       <div>
         <h4>Product</h4>
         <a href="#pricing">Pricing</a>
-        <a href="#how">How it works</a>
+        <a href="#results">How it works</a>
         <a href="/app.html">Order now</a>
       </div>
       <div>

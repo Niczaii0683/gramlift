@@ -91,6 +91,11 @@ main{padding:36px 0 80px}
 /* inline form inside a card */
 .inline{margin-top:10px;text-align:left}
 .inline label{display:block;font-size:11px;font-weight:600;color:var(--ink-2);margin-bottom:4px}
+/* label on the left, "clear" on the right, above the saved-username dropdown */
+.inline .lbl-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.inline .clear-link{background:none;border:none;padding:0 0 4px;font-family:inherit;
+  font-size:11px;font-weight:600;color:var(--ink-3);cursor:pointer;text-decoration:underline}
+.inline .clear-link:hover{color:var(--bad)}
 .inline select,.inline input{width:100%;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;font-size:13px;outline:none;background:#fff;margin-bottom:7px}
 .inline select:focus,.inline input:focus{border-color:var(--accent)}
 .inline input.err{border-color:var(--bad)}
@@ -248,6 +253,9 @@ const PROD_ICON = {followers:I.users, likes:I.heart, views:I.play, shares:I.shar
    ═══════════════════════════════════════════════════════════════════════ */
 const USERNAME_RE = /^[a-zA-Z0-9_.]{1,30}$/;
 const POST_RE     = /^https?:\/\/(www\.)?instagram\.com\/(p|reel|reels|tv)\/[A-Za-z0-9_-]+\/?/i;
+
+// How many usernames this browser remembers. Saved in localStorage only.
+const MAX_HANDLES = 5;
 const EMAIL_RE    = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const cleanUser   = v => String(v||"").trim().replace(/^@/,"").toLowerCase();
 
@@ -307,7 +315,11 @@ function form(type, qty){
     const saved = S.handles;
     return `<div class="inline">
       ${saved.length ? `
-        <label for="sel_${id}">Account</label>
+        <div class="lbl-row">
+          <label for="sel_${id}">Account</label>
+          <button type="button" class="clear-link" onclick="clearHandles()"
+                  title="Remove every saved username from this browser">clear</button>
+        </div>
         <select id="sel_${id}" onchange="pick('${id}', this.value)">
           ${saved.map(h=>`<option value="${h}">@${h}</option>`).join("")}
           <option value="__new">Use another account…</option>
@@ -355,7 +367,8 @@ function addItem(type, qty){
     if (!user)                    return set({err:{key, msg:"Enter an Instagram username."}});
     if (!USERNAME_RE.test(user))  return set({err:{key, msg:"Letters, numbers, dots and underscores only."}});
 
-    const handles = S.handles.includes(user) ? S.handles : [...S.handles, user].slice(0, 20);
+    // Most recently used first, no duplicates, keep only the last 5.
+    const handles = [user, ...S.handles.filter(h => h !== user)].slice(0, MAX_HANDLES);
     set({
       cart: [...S.cart, {id:Date.now()+"", type, qty, price, instagram:user, shown:"@"+user}],
       handles, open:null, err:null,
@@ -531,10 +544,18 @@ function addHandle(){
   if (!h)                    return set({handleErr:"Type a username first."});
   if (!USERNAME_RE.test(h))  return set({handleErr:"Letters, numbers, dots and underscores only."});
   if (S.handles.includes(h)) return set({handleErr:"That one is already saved."});
-  set({handles:[...S.handles, h], handleErr:null});
+  set({handles:[h, ...S.handles].slice(0, MAX_HANDLES), handleErr:null});
   toast(`@${h} saved`);
 }
 function delHandle(h){ set({handles: S.handles.filter(x=>x!==h)}); }
+
+// Wipes every saved username from this browser. Nothing leaves the device
+// and nothing is stored on our servers, so there is nothing else to clear.
+function clearHandles(){
+  if (!S.handles.length) return;
+  set({handles: [], open: null});
+  toast("Saved usernames cleared");
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    PAY — hands the cart to the server, which prices it and returns a
